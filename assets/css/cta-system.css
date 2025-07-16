@@ -1,0 +1,512 @@
+/**
+ * CTA統合システム CSS
+ * LINE公式アカウントを含む統合CTAスタイル
+ */
+
+/* === 共通CTA基盤スタイル === */
+.cta-base {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-family: var(--font-body);
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-base:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.cta-base i {
+    margin-right: 8px;
+}
+
+.cta-base:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* === プライマリCTA（査定ボタン） === */
+.cta-primary {
+    background: linear-gradient(135deg, var(--color-primary), #0F2A3F);
+    color: #fff;
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 16px rgba(26, 58, 79, 0.3);
+}
+
+.cta-primary:hover {
+    background: linear-gradient(135deg, #0F2A3F, var(--color-primary));
+    box-shadow: 0 6px 24px rgba(26, 58, 79, 0.5);
+    color: #fff;
+}
+
+.cta-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(26, 58, 79, 0.4);
+}
+
+/* === LINE CTA === */
+.cta-line {
+    background: linear-gradient(135deg, #00C73C, #00B239);
+    color: #fff;
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 16px rgba(0, 199, 60, 0.3);
+}
+
+.cta-line:hover {
+    background: linear-gradient(135deg, #00B239, #00A233);
+    box-shadow: 0 6px 24px rgba(0, 199, 60, 0.5);
+    color: #fff;
+}
+
+.cta-line:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 199, 60, 0.4);
+}
+
+.cta-line i {
+    font-size: 1.2em;
+}
+
+/* === 電話CTA === */
+.cta-phone {
+    background: linear-gradient(135deg, #FF6B6B, #FF5252);
+    color: #fff;
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+}
+
+.cta-phone:hover {
+    background: linear-gradient(135deg, #FF5252, #FF4444);
+    box-shadow: 0 6px 24px rgba(255, 107, 107, 0.5);
+    color: #fff;
+}
+
+.cta-phone:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
+/* === フローティングCTA === */
+.floating-cta-enhanced {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 12px 16px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transform: translateY(0) !important;
+    transition: none;
+}
+
+.floating-cta-enhanced a {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+
+.floating-cta-enhanced a i {
+    font-size: 1.1em;
+    margin-right: 4px;
+}
+
+.floating-cta-enhanced a span {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* === ヘッダーCTA === */
+.header-cta-btn {
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.header-cta-btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+/* === インラインCTA === */
+.cta-button {
+    display: inline-block;
+    padding: 20px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    min-width: 200px;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.cta-button:active {
+    transform: translateY(0);
+}
+
+.cta-button.cta-primary {
+    background-color: var(--color-accent);
+    color: #fff;
+}
+
+.cta-button.cta-primary:hover {
+    background-color: #A67C42;
+    color: #fff;
+}
+
+.cta-button.cta-line-secondary {
+    background-color: #00C73C;
+    color: #fff;
+}
+
+.cta-button.cta-line-secondary:hover {
+    background-color: #00B239;
+    color: #fff;
+}
+
+/* === CTAグループ === */
+.cta-group {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cta-group .cta-button {
+    flex: 1;
+    min-width: 180px;
+    max-width: 300px;
+}
+
+/* === アニメーション === */
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* フローティングCTAを常に表示 */
+.floating-cta-enhanced {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* === レスポンシブ対応 === */
+@media (max-width: 768px) {
+    .floating-cta-enhanced {
+        padding: 12px 16px;
+        gap: 8px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+    }
+    
+    .floating-cta-enhanced a {
+        padding: 16px 12px;
+        font-size: 0.9rem;
+        min-height: 48px; /* タップしやすいサイズ */
+        border-radius: 12px;
+    }
+    
+    /* 電話ボタンを強調 */
+    .floating-cta-enhanced .cta-phone {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        font-weight: 700;
+        position: relative;
+    }
+    
+    .floating-cta-enhanced .cta-phone::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border-radius: 14px;
+        z-index: -1;
+        animation: pulse 2s infinite;
+    }
+    
+    /* ヒーローセクションの改善 */
+    .hero-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .stat-item {
+        text-align: center;
+        background: rgba(255,255,255,0.1);
+        padding: 12px 8px;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        min-width: 80px;
+    }
+    
+    .stat-number {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.8);
+    }
+    
+    .hero-benefits {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 30px 0;
+        align-items: center;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.1);
+        padding: 12px 20px;
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        font-size: 0.9rem;
+    }
+    
+    .benefit-item i {
+        color: var(--color-accent);
+        font-size: 1.2rem;
+    }
+    
+    .hero-cta-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 30px;
+    }
+    
+    .hero-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px 24px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-height: 48px;
+        box-sizing: border-box;
+    }
+    
+    .hero-cta.primary {
+        background: linear-gradient(135deg, var(--color-accent), #D4A574);
+        color: #fff;
+    }
+    
+    .hero-cta.secondary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: #fff;
+    }
+    
+    .hero-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    .floating-cta-enhanced a span {
+        font-size: 0.75rem;
+    }
+    
+    .floating-cta-enhanced a i {
+        font-size: 1em;
+    }
+    
+    .cta-button {
+        padding: 16px 24px;
+        font-size: 1rem;
+    }
+    
+    .cta-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .cta-group .cta-button {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-cta-enhanced {
+        padding: 8px 10px;
+        gap: 4px;
+    }
+    
+    .floating-cta-enhanced a {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+        min-height: 36px;
+    }
+    
+    .floating-cta-enhanced a span {
+        font-size: 0.7rem;
+    }
+    
+    .floating-cta-enhanced a i {
+        font-size: 0.9em;
+        margin-right: 2px;
+    }
+    
+    .cta-button {
+        padding: 14px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .cta-primary,
+    .cta-line,
+    .cta-phone {
+        padding: 14px 24px;
+        font-size: 1rem;
+    }
+}
+
+/* === 3つのCTAの特殊配置 === */
+.floating-cta-enhanced.three-cta {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.floating-cta-enhanced.three-cta a {
+    border-radius: 20px;
+}
+
+/* === ホバーエフェクト強化 === */
+.cta-line:hover {
+    animation: pulse 0.3s ease-in-out;
+}
+
+.cta-primary:hover {
+    box-shadow: 0 8px 32px rgba(26, 58, 79, 0.6);
+}
+
+.cta-phone:hover {
+    box-shadow: 0 8px 32px rgba(255, 107, 107, 0.6);
+}
+
+/* === アクセシビリティ === */
+@media (prefers-reduced-motion: reduce) {
+    .cta-base,
+    .floating-cta-enhanced,
+    .floating-cta-enhanced a {
+        animation: none;
+        transition: none;
+    }
+    
+    .cta-base:hover {
+        transform: none;
+    }
+}
+
+/* === フォーカス状態 === */
+.cta-base:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* === 既存のfloating-ctaとの互換性 === */
+.floating-cta {
+    display: none; /* 新しいsystemを使用する場合は非表示 */
+}
+
+/* スクロール時もCTAを表示し続ける */
+.floating-cta-enhanced.hide {
+    transform: translateY(0) !important;
+}
+
+/* bodyの余白を確保 */
+body {
+    padding-bottom: 80px !important;
+}
+
+/* === 段階的な表示アニメーション === */
+.cta-group .cta-button:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.cta-group .cta-button:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.cta-group .cta-button:nth-child(3) {
+    animation-delay: 0.3s;
+}
