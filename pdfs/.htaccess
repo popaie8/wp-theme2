@@ -1,0 +1,8 @@
+# PDFディレクトリへの直接アクセスを禁止
+Options -Indexes
+
+# 直接アクセスをブロック
+<FilesMatch "\.(pdf)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

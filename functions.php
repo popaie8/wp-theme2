@@ -102,91 +102,548 @@ function leaseback_add_fontawesome() {
 }
 
 // WordPress管理画面にデバッグログ表示ページを追加
-add_action('admin_menu', 'leaseback_debug_menu');
-function leaseback_debug_menu() {
-    add_submenu_page(
-        'edit.php?post_type=lead',
-        'デバッグログ',
-        'デバッグログ',
-        'manage_options',
-        'leaseback-debug-log',
-        'leaseback_debug_log_page'
-    );
-}
-
-function leaseback_debug_log_page() {
-    $log_file = WP_CONTENT_DIR . '/debug.log';
-    
-    echo '<div class="wrap">';
-    echo '<h1>デバッグログ</h1>';
-    
-    if (file_exists($log_file)) {
-        echo '<h2>最新のログ (最後の50行)</h2>';
-        echo '<div style="background: #f1f1f1; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: scroll;">';
-        
-        $lines = file($log_file);
-        $last_lines = array_slice($lines, -50);
-        echo esc_html(implode('', $last_lines));
-        
-        echo '</div>';
-        
-        echo '<h2>フォーム送信関連ログのみ</h2>';
-        echo '<div style="background: #f9f9f9; padding: 10px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: scroll;">';
-        
-        $all_lines = file_get_contents($log_file);
-        $form_lines = array();
-        foreach (explode("\n", $all_lines) as $line) {
-            if (strpos($line, '📝') !== false || strpos($line, '📧') !== false || strpos($line, '📊') !== false || strpos($line, '✅') !== false || strpos($line, '❌') !== false) {
-                $form_lines[] = $line;
-            }
-        }
-        echo esc_html(implode("\n", array_slice($form_lines, -20)));
-        
-        echo '</div>';
-        
-        echo '<p><a href="?page=leaseback-debug-log&clear=1" class="button">ログをクリア</a></p>';
-        
-        if (isset($_GET['clear'])) {
-            file_put_contents($log_file, '');
-            echo '<div class="notice notice-success"><p>ログをクリアしました。</p></div>';
-        }
-        
-    } else {
-        echo '<p>デバッグログファイルが見つかりません: ' . $log_file . '</p>';
-        echo '<p>wp-config.phpでデバッグログを有効にしてください。</p>';
-        
-        // ログファイルを作成
-        if (touch($log_file)) {
-            echo '<div class="notice notice-success"><p>ログファイルを作成しました。</p></div>';
-        } else {
-            echo '<div class="notice notice-error"><p>ログファイルの作成に失敗しました。</p></div>';
-        }
-    }
-    
-    echo '</div>';
-}
-
-// デバッグ情報を表示（開発用）
-add_action('wp_footer', 'leaseback_debug_info');
-function leaseback_debug_info() {
-    if (current_user_can('manage_options')) {
-        echo '<div style="position: fixed; bottom: 10px; left: 10px; background: #000; color: #fff; padding: 10px; font-size: 12px; z-index: 9999;">
-            <strong>Debug Info:</strong><br>
-            Current URL: ' . $_SERVER['REQUEST_URI'] . '<br>
-            Template: ' . get_page_template() . '<br>
-            Query Var: ' . get_query_var('page_template') . '
-        </div>';
-    }
-}
 
 // AJAX ハンドラー（完全修正版）
 add_action('admin_post_nopriv_lead_submit', 'ultimate_lead_submit');
 add_action('admin_post_lead_submit', 'ultimate_lead_submit');
 
+// AI査定専用AJAXハンドラー
+add_action('wp_ajax_nopriv_ai_assessment_submit', 'handle_ai_assessment_submit');
+add_action('wp_ajax_ai_assessment_submit', 'handle_ai_assessment_submit');
+
+// AI査定テーブル作成
+register_activation_hook(__FILE__, 'create_ai_assessment_table');
+function create_ai_assessment_table() {
+    global $wpdb;
+    
+    $table_name = $wpdb->prefix . 'ai_assessments';
+    
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        name varchar(255) DEFAULT '匿名',
+        email varchar(255) NOT NULL,
+        property_type varchar(50) NOT NULL,
+        area varchar(50) NOT NULL,
+        age varchar(20) NOT NULL,
+        size int(11) NOT NULL,
+        station varchar(20) NOT NULL,
+        estimated_price int(11) NOT NULL,
+        estimated_low int(11) NOT NULL,
+        estimated_high int(11) NOT NULL,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP,
+        ip_address varchar(45) NOT NULL,
+        user_agent text,
+        PRIMARY KEY (id)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+    
+    // nameカラムが存在しない場合は追加
+    $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $table_name LIKE 'name'");
+    if (empty($column_exists)) {
+        $wpdb->query("ALTER TABLE $table_name ADD COLUMN name varchar(255) DEFAULT '匿名' AFTER id");
+    }
+}
+
+// 手動でテーブルを更新する関数
+function update_ai_assessment_table() {
+    global $wpdb;
+    
+    $table_name = $wpdb->prefix . 'ai_assessments';
+    
+    // テーブルが存在しない場合は作成
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        create_ai_assessment_table();
+        return;
+    }
+    
+    // nameカラムが存在しない場合は追加
+    $column_exists = $wpdb->get_results("SHOW COLUMNS FROM $table_name LIKE 'name'");
+    if (empty($column_exists)) {
+        $result = $wpdb->query("ALTER TABLE $table_name ADD COLUMN name varchar(255) DEFAULT '匿名' AFTER id");
+        if ($result === false) {
+            error_log('nameカラム追加エラー: ' . $wpdb->last_error);
+        } else {
+            error_log('nameカラム追加成功');
+        }
+    }
+}
+
+// テーブルを削除して再作成する関数（デバッグ用）
+function recreate_ai_assessment_table() {
+    global $wpdb;
+    
+    $table_name = $wpdb->prefix . 'ai_assessments';
+    
+    // テーブルを削除
+    $wpdb->query("DROP TABLE IF EXISTS $table_name");
+    
+    // テーブルを再作成
+    create_ai_assessment_table();
+    
+    error_log('AI査定テーブルを再作成しました');
+}
+
+// URL経由でテーブルを再作成できるようにする（デバッグ用）
+add_action('wp_ajax_recreate_ai_table', 'recreate_ai_assessment_table');
+add_action('wp_ajax_nopriv_recreate_ai_table', 'recreate_ai_assessment_table');
+
+// AI査定専用処理関数
+function handle_ai_assessment_submit() {
+    global $wpdb;
+    
+    try {
+        // テーブル構造を確認・更新
+        update_ai_assessment_table();
+        
+        // nonceチェック
+        if (!wp_verify_nonce($_POST['nonce'], 'ai_assessment_nonce')) {
+            wp_die('セキュリティエラーが発生しました。', 'セキュリティエラー', array('response' => 403));
+        }
+        
+        // データ取得・検証
+        $name = '匿名'; // 名前フィールドを削除したため固定値
+        $email = sanitize_email($_POST['email']);
+        $property_type = sanitize_text_field($_POST['property_type']);
+        $area = sanitize_text_field($_POST['area']);
+        $age = sanitize_text_field($_POST['age']);
+        $size = intval($_POST['size']);
+        $station = sanitize_text_field($_POST['station']);
+        $estimated_price = intval($_POST['estimated_price']);
+        $estimated_low = intval($_POST['estimated_low']);
+        $estimated_high = intval($_POST['estimated_high']);
+        
+        // 必須項目チェック
+        if (empty($email) || empty($property_type) || empty($area)) {
+            wp_send_json_error('必須項目が入力されていません。');
+            return;
+        }
+        
+        // IPアドレスとユーザーエージェント取得
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+        $user_agent = $_SERVER['HTTP_USER_AGENT'];
+        
+        // データベースに保存
+        $table_name = $wpdb->prefix . 'ai_assessments';
+        $result = $wpdb->insert(
+            $table_name,
+            array(
+                'name' => $name,
+                'email' => $email,
+                'property_type' => $property_type,
+                'area' => $area,
+                'age' => $age,
+                'size' => $size,
+                'station' => $station,
+                'estimated_price' => $estimated_price,
+                'estimated_low' => $estimated_low,
+                'estimated_high' => $estimated_high,
+                'ip_address' => $ip_address,
+                'user_agent' => $user_agent
+            ),
+            array('%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d', '%d', '%s', '%s')
+        );
+        
+        if ($result === false) {
+            error_log('AI査定データベース保存エラー: ' . $wpdb->last_error);
+            error_log('保存データ: ' . print_r(array(
+                'name' => $name,
+                'email' => $email,
+                'property_type' => $property_type,
+                'area' => $area,
+                'age' => $age,
+                'size' => $size,
+                'station' => $station,
+                'estimated_price' => $estimated_price,
+                'estimated_low' => $estimated_low,
+                'estimated_high' => $estimated_high,
+                'ip_address' => $ip_address,
+                'user_agent' => $user_agent
+            ), true));
+            wp_send_json_error('データ保存に失敗しました。詳細: ' . $wpdb->last_error);
+            return;
+        }
+        
+        $assessment_id = $wpdb->insert_id;
+        
+        // 査定データ構造体作成
+        $assessment_data = array(
+            'id' => $assessment_id,
+            'name' => $name,
+            'email' => $email,
+            'property_type' => $property_type,
+            'area' => $area,
+            'age' => $age,
+            'size' => $size,
+            'station' => $station,
+            'estimated_price' => $estimated_price,
+            'estimated_low' => $estimated_low,
+            'estimated_high' => $estimated_high,
+            'created_at' => current_time('mysql'),
+            'ip_address' => $ip_address
+        );
+        
+        // PDF生成を先に実行
+        require_once get_template_directory() . '/includes/class-pdf-generator.php';
+        $pdf_generator = new Leaseback_PDF_Generator($assessment_data);
+        $pdf_result = $pdf_generator->generate();
+        
+        // PDFダウンロード情報を保存
+        update_option('pdf_download_' . $assessment_id, array(
+            'filename' => $pdf_result['filename'],
+            'expires_at' => $pdf_result['expires_at']
+        ));
+        
+        // 自動返信メール送信（PDFリンク付き）
+        $mail_sent = send_ai_assessment_email($assessment_data, $pdf_result['download_url']);
+        
+        // Google Sheets送信
+        $sheets_sent = send_ai_assessment_to_sheets($assessment_data);
+        
+        // 成功レスポンス
+        wp_send_json_success(array(
+            'assessment_id' => $assessment_id,
+            'mail_sent' => $mail_sent,
+            'sheets_sent' => $sheets_sent,
+            'pdf_url' => $pdf_result['download_url'],
+            'message' => 'AI査定結果をメールで送信しました。'
+        ));
+        
+    } catch (Exception $e) {
+        error_log('AI査定処理エラー: ' . $e->getMessage());
+        wp_send_json_error('処理中にエラーが発生しました。');
+    }
+}
+
+// AI査定メール送信
+function send_ai_assessment_email($data, $pdf_url = '') {
+    $customer_email = $data['email'];
+    $admin_email = get_option('admin_email');
+    
+    // PDFダウンロードURLを追加
+    $data['pdf_url'] = $pdf_url;
+    
+    // 顧客向けメール
+    $customer_subject = 'リースバック活用ガイド（無料）をお送りします';
+    $customer_message = build_ai_assessment_customer_email($data);
+    
+    $customer_mail_sent = wp_mail($customer_email, $customer_subject, $customer_message, [
+        'Content-Type: text/html; charset=UTF-8',
+        'From: リースバック住み続け隊 <' . $admin_email . '>'
+    ]);
+    
+    if (!$customer_mail_sent) {
+        error_log('顧客向けメール送信失敗: ' . $customer_email);
+    }
+    
+    // 管理者向けメール
+    $admin_subject = '【新規】AI査定申し込み - AI-' . $data['id'];
+    $admin_message = build_ai_assessment_admin_email($data);
+    
+    $admin_mail_sent = wp_mail($admin_email, $admin_subject, $admin_message, [
+        'Content-Type: text/html; charset=UTF-8'
+    ]);
+    
+    if (!$admin_mail_sent) {
+        error_log('管理者向けメール送信失敗: ' . $admin_email);
+    }
+    
+    return $customer_mail_sent;
+}
+
+// 顧客向けメール内容
+function build_ai_assessment_customer_email($data) {
+    $assessment_id = $data['id'];
+    $estimated_price = number_format($data['estimated_price']);
+    $estimated_low = number_format($data['estimated_low']);
+    $estimated_high = number_format($data['estimated_high']);
+    
+    return "
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+        <h2 style='color: #2c5aa0; border-bottom: 2px solid #2c5aa0; padding-bottom: 10px;'>
+            📊 リースバック活用ガイドをお送りします
+        </h2>
+        
+        <p>お客様</p>
+        
+        <p>この度は、AI査定サービスをご利用いただき、ありがとうございます。</p>
+        
+        <div style='background-color: #f0f8ff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #2c5aa0;'>
+            <h3 style='color: #2c5aa0; margin-top: 0;'>💰 AI査定結果</h3>
+            <div style='background-color: #fff; padding: 15px; border-radius: 5px; text-align: center;'>
+                <p style='margin: 0; color: #666; font-size: 14px;'>推定査定価格</p>
+                <p style='margin: 10px 0; font-size: 24px; font-weight: bold; color: #2c5aa0;'>{$estimated_price}万円</p>
+                <p style='margin: 0; color: #666; font-size: 12px;'>想定範囲: {$estimated_low}万円 〜 {$estimated_high}万円</p>
+            </div>
+            <p style='margin: 15px 0 0 0; font-size: 12px; color: #666;'>※ こちらは概算価格です。実際の査定額は物件の詳細によって変動します。</p>
+        </div>
+        
+        <div style='background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;'>
+            <h3 style='color: #2c5aa0; margin-top: 0;'>🎁 無料特典のご案内</h3>
+            <p>査定結果と併せて、<strong>「リースバック活用ガイド」</strong>をプレゼントいたします。</p>
+            <p>このガイドには、リースバック成功のポイントや注意点をまとめています。</p>
+            
+            " . (!empty($data['pdf_url']) ? "
+            <div style='text-align: center; margin: 20px 0;'>
+                <a href='{$data['pdf_url']}' style='display: inline-block; background: #2c5aa0; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; font-size: 16px; font-weight: bold;'>
+                    📥 活用ガイドをダウンロード
+                </a>
+                <p style='margin: 10px 0 0 0; font-size: 12px; color: #666;'>※ リンクは24時間有効です</p>
+            </div>
+            " : "") . "
+            
+            <div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 15px 0;'>
+                <p style='margin: 0;'><strong>査定ID:</strong> AI-{$assessment_id}</p>
+                <p style='margin: 5px 0 0 0;'><strong>申込日時:</strong> " . date('Y年m月d日 H:i') . "</p>
+            </div>
+        </div>
+        
+        <div style='background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin: 20px 0;'>
+            <h3 style='color: #2c5aa0; margin-top: 0;'>📞 さらに詳しい査定をご希望の場合</h3>
+            <p>AI査定はあくまで概算です。より詳細な査定をご希望の場合は、お気軽にご連絡ください。</p>
+            
+            <div style='margin: 15px 0;'>
+                <p style='margin: 5px 0;'><strong>📞 電話:</strong> 050-5810-5875</p>
+                <p style='margin: 5px 0;'><strong>💬 LINE:</strong> @377sitjf</p>
+            </div>
+        </div>
+        
+        <div style='background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;'>
+            <h4 style='color: #856404; margin-top: 0;'>💡 リースバック成功のポイント</h4>
+            <ul style='color: #856404; margin: 10px 0;'>
+                <li>早めの相談で選択肢を広げる</li>
+                <li>複数の条件を比較検討する</li>
+                <li>契約内容をしっかり理解する</li>
+            </ul>
+        </div>
+        
+        <hr style='margin: 30px 0; border: none; border-top: 1px solid #ddd;'>
+        
+        <div style='font-size: 12px; color: #666; line-height: 1.6;'>
+            <p><strong>リースバック住み続け隊</strong></p>
+            <p>代表取締役　黒江 貴裕</p>
+            <p>📞 050-5810-5875　💬 LINE: @377sitjf</p>
+            <p>本メールは自動送信です。ご不明な点がございましたら、上記連絡先までお問い合わせください。</p>
+        </div>
+    </div>
+    ";
+}
+
+// 管理者向けメール内容
+function build_ai_assessment_admin_email($data) {
+    return "
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+        <h2 style='color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 10px;'>
+            【新規】AI査定申し込み
+        </h2>
+        
+        <table style='width: 100%; border-collapse: collapse; margin: 20px 0;'>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; width: 120px;'><strong>申込日時</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>" . date('Y年m月d日 H:i:s') . "</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>査定ID</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>AI-{$data['id']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>名前</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['name']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>メールアドレス</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['email']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>物件種別</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['property_type']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>面積</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['area']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>築年数</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['age']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>サイズ</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['size']}</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>駅距離</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['station']}</td>
+            </tr>
+            <tr style='background-color: #f0f8ff;'>
+                <td style='padding: 10px; background-color: #e8f4f8; border: 1px solid #ddd; font-weight: bold;'><strong>推定査定価格</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #2c5aa0;'>" . number_format($data['estimated_price']) . "万円</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>想定範囲</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>" . number_format($data['estimated_low']) . "万円 〜 " . number_format($data['estimated_high']) . "万円</td>
+            </tr>
+            <tr>
+                <td style='padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd;'><strong>IPアドレス</strong></td>
+                <td style='padding: 10px; border: 1px solid #ddd;'>{$data['ip_address']}</td>
+            </tr>
+        </table>
+        
+        <div style='background-color: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0;'>
+            <h4 style='color: #856404; margin-top: 0;'>📋 対応必要事項</h4>
+            <ul style='color: #856404;'>
+                <li>顧客への活用ガイド送付確認</li>
+                <li>必要に応じて詳細査定の案内</li>
+                <li>フォローアップ実施</li>
+            </ul>
+        </div>
+    </div>
+    ";
+}
+
+// Google Sheets送信（既存シートの別タブに統一）
+function send_ai_assessment_to_sheets($data) {
+    // 通常フォームと同じWebhook URLを使用
+    $webhook_url = 'https://script.google.com/macros/s/AKfycbwJAEwKNqh1enhpjced1EYdzvWckPzsJ_QLOPVV9sO3vvs84K3Y1i6mBGcMYEHX-7o/exec';
+    
+    // 認証キーを追加
+    $secret_key = 'sumitsu2025';
+    
+    // URLパラメータ形式で送信データを準備
+    $sheets_data = array(
+        'secret' => $secret_key,
+        'sheet_name' => 'AI査定', // 別タブに記録
+        'type' => 'ai_assessment',
+        'lead_id' => 'AI-' . $data['id'],
+        'timestamp' => date('Y-m-d H:i:s'),
+        'assessment_id' => 'AI-' . $data['id'],
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'property_type' => $data['property_type'],
+        'area' => $data['area'],
+        'age' => $data['age'],
+        'size' => $data['size'],
+        'station' => $data['station'],
+        'estimated_price' => $data['estimated_price'],
+        'estimated_low' => $data['estimated_low'],
+        'estimated_high' => $data['estimated_high'],
+        'ip_address' => $data['ip_address']
+    );
+    
+    // URLパラメータ形式でGET送信（通常フォームと同じ形式）
+    $url_with_params = $webhook_url . '?' . http_build_query($sheets_data);
+    
+    $args = [
+        'method' => 'GET',
+        'timeout' => 30
+    ];
+    
+    $response = wp_remote_get($url_with_params, $args);
+    
+    if (is_wp_error($response)) {
+        error_log('Google Sheets送信エラー: ' . $response->get_error_message());
+        return false;
+    }
+    
+    $body = wp_remote_retrieve_body($response);
+    $status_code = wp_remote_retrieve_response_code($response);
+    
+    if ($status_code !== 200) {
+        error_log('Google Sheets送信エラー (HTTP ' . $status_code . '): ' . $body);
+        return false;
+    }
+    
+    error_log('Google Sheets送信成功: ' . $body);
+    return true;
+}
+
+// PDFダウンロード処理
+add_action('wp_ajax_download_assessment_pdf', 'handle_pdf_download');
+add_action('wp_ajax_nopriv_download_assessment_pdf', 'handle_pdf_download');
+
+function handle_pdf_download() {
+    // パラメータ取得
+    $assessment_id = isset($_GET['aid']) ? intval($_GET['aid']) : 0;
+    $filename = isset($_GET['file']) ? sanitize_text_field($_GET['file']) : '';
+    $expires = isset($_GET['expires']) ? intval($_GET['expires']) : 0;
+    $token = isset($_GET['token']) ? sanitize_text_field($_GET['token']) : '';
+    
+    // 有効期限チェック
+    if (time() > $expires) {
+        wp_die('このリンクは有効期限が切れています。', 'エラー', array('response' => 403));
+    }
+    
+    // トークン検証
+    $expected_token = hash_hmac('sha256', $assessment_id . $filename . $expires, SECURE_AUTH_KEY);
+    if (!hash_equals($expected_token, $token)) {
+        wp_die('無効なリクエストです。', 'エラー', array('response' => 403));
+    }
+    
+    // 保存されたPDF情報を確認
+    $pdf_info = get_option('pdf_download_' . $assessment_id);
+    if (!$pdf_info || $pdf_info['filename'] !== $filename) {
+        wp_die('ファイルが見つかりません。', 'エラー', array('response' => 404));
+    }
+    
+    // HTMLファイルのパス
+    $html_file = get_template_directory() . '/pdfs/generated/' . $filename . '.html';
+    
+    if (!file_exists($html_file)) {
+        wp_die('ファイルが見つかりません。', 'エラー', array('response' => 404));
+    }
+    
+    // HTMLコンテンツを読み込む
+    $html_content = file_get_contents($html_file);
+    
+    // ブラウザでHTMLとして表示（PDFとして印刷可能）
+    header('Content-Type: text/html; charset=UTF-8');
+    header('Content-Disposition: inline; filename="leaseback_guide.html"');
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    
+    // 印刷用スタイルを追加
+    $html_content = str_replace('</head>', '
+    <style media="print">
+        @page { size: A4; margin: 10mm; }
+        .page { page-break-after: always; }
+        .no-print { display: none; }
+    </style>
+    <script>
+        // 自動で印刷ダイアログを開く
+        window.onload = function() {
+            setTimeout(function() {
+                if (confirm("PDFとして保存しますか？\\n\\n「OK」をクリックして、印刷ダイアログで「PDFとして保存」を選択してください。")) {
+                    window.print();
+                }
+            }, 1000);
+        };
+    </script>
+    </head>', $html_content);
+    
+    // 操作ガイドを追加
+    $guide = '<div class="no-print" style="background: #f0f0f0; padding: 20px; margin-bottom: 20px; text-align: center;">
+        <h3>📄 PDFとして保存する方法</h3>
+        <p>1. ブラウザの印刷機能（Ctrl+P または Cmd+P）を開く<br>
+        2. 送信先で「PDFとして保存」を選択<br>
+        3. 「保存」ボタンをクリック</p>
+    </div>';
+    
+    $html_content = str_replace('<body>', '<body>' . $guide, $html_content);
+    
+    echo $html_content;
+    
+    // アクセスログ
+    error_log('PDF downloaded - Assessment ID: ' . $assessment_id . ', IP: ' . $_SERVER['REMOTE_ADDR']);
+    
+    exit;
+}
+
 function ultimate_lead_submit() {
     try {
-        // 全データ詳細ログ
-        error_log('🔍 全POSTデータ: ' . print_r($_POST, true));
+        // フォーム送信処理開始
         
         // nonceチェック（エラーでも処理続行）
         $nonce = isset($_POST['nonce']) ? sanitize_text_field($_POST['nonce']) : '';
@@ -360,11 +817,9 @@ function send_to_google_sheets($data) {
         
         // POST送信 (form-data形式で送信)
         error_log('📊 Google Sheets送信試行: ' . $webhook_url);
-        error_log('📊 送信データ: ' . print_r($sheets_data, true));
         
-        // URL Parametersとして送信（デバッグで成功確認済み）
+        // URL Parametersとして送信
         $url_with_params = $webhook_url . '?' . http_build_query($sheets_data);
-        error_log('📊 URL Parameters送信: ' . substr($url_with_params, 0, 150) . '...');
         
         $response = wp_remote_get($url_with_params, array(
             'timeout' => 30,
@@ -378,7 +833,7 @@ function send_to_google_sheets($data) {
         
         $response_code = wp_remote_retrieve_response_code($response);
         $response_body = wp_remote_retrieve_body($response);
-        error_log('📊 Google Sheets レスポンス: HTTP ' . $response_code . ' - ' . $response_body);
+        error_log('📊 Google Sheets レスポンス: HTTP ' . $response_code);
         
         if ($response_code === 200) {
             error_log('✅ Google Sheets送信成功');
@@ -404,8 +859,6 @@ function send_notification_emails($data) {
         }
         
         // SMTP設定確認
-        error_log('📧 WordPress メール設定確認');
-        error_log('📧 サーバーメール機能: ' . (function_exists('mail') ? '利用可能' : '利用不可'));
         $customer_name = $data['name'];
         $customer_email = $data['email'];
         $admin_email = get_option('leaseback_admin_email', LEASEBACK_ADMIN_EMAIL);

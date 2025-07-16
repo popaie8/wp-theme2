@@ -120,15 +120,26 @@
                 </div>
             </div>
             
-            <div class="email-section">
-                <h5>詳細な査定結果をメールでお送りします</h5>
+            <div class="premium-offer">
+                <div class="offer-header">
+                    <h5>📊 リースバック活用ガイド（無料）をプレゼント</h5>
+                    <p>査定結果と併せて、リースバック成功のポイントをまとめた特別資料をお送りします</p>
+                </div>
+                
+                <div class="offer-benefits">
+                    <div class="benefit-item">✅ あなたの査定結果を保存</div>
+                    <div class="benefit-item">✅ リースバック活用の成功事例</div>
+                    <div class="benefit-item">✅ 専門家による無料相談のご案内</div>
+                </div>
+                
                 <div class="email-input-group">
                     <input type="email" id="email" placeholder="メールアドレス" required>
-                    <button type="submit" class="final-submit-btn">
-                        <i class="fas fa-envelope"></i>
-                        詳細査定を受け取る
+                    <button type="submit" class="get-guide-btn">
+                        <i class="fas fa-gift"></i>
+                        無料ガイドを受け取る
                     </button>
                 </div>
+                
                 <div class="privacy-note">
                     <i class="fas fa-lock"></i>
                     <span>営業電話は一切ありません・匿名査定OK</span>
@@ -136,6 +147,30 @@
             </div>
             
             <button class="back-btn" onclick="goToStep('step2')">← 戻る</button>
+        </div>
+        
+        <!-- Step 5: サンクスページ -->
+        <div class="form-step" id="step5">
+            <div class="thank-you-page">
+                <div class="success-icon">✅</div>
+                <h3>査定結果とガイドをメールで送信しました</h3>
+                <p>数分以内にメールが届きます。迷惑メールフォルダもご確認ください。</p>
+                
+                <div class="next-steps">
+                    <h4>📋 より正確な査定をご希望の場合</h4>
+                    <p>郵便番号から住所を自動取得し、専門家が精密な査定を行います</p>
+                    <a href="#assessment-form" class="detailed-form-link">
+                        <i class="fas fa-calculator"></i>
+                        正式査定フォームへ進む
+                    </a>
+                </div>
+                
+                <div class="contact-info">
+                    <h4>📞 お急ぎの場合</h4>
+                    <p>TEL: <a href="tel:050-5810-5875">050-5810-5875</a>（9:00〜19:00 年中無休）</p>
+                    <p class="contact-note">営業電話は一切ありません</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -285,6 +320,203 @@
     font-size: 0.8rem;
     color: #666;
     margin-top: 5px;
+}
+
+/* Premium Offer Styles */
+.premium-offer {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 2px solid #28a745;
+    position: relative;
+    overflow: hidden;
+}
+
+.premium-offer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #28a745, #20c997, #28a745);
+}
+
+.offer-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.offer-header h5 {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.offer-header p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.offer-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+}
+
+.benefit-item {
+    color: #28a745;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.get-guide-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: #fff;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.get-guide-btn:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+.get-guide-btn i {
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+/* Thank You Page Styles */
+.thank-you-page {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #28a745;
+}
+
+.thank-you-page h3 {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.thank-you-page > p {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.next-steps {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 2px solid #007bff;
+    position: relative;
+}
+
+.next-steps::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #007bff, #0056b3, #007bff);
+}
+
+.next-steps h4 {
+    color: var(--color-primary);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.next-steps p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.detailed-form-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.detailed-form-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    color: #fff;
+    text-decoration: none;
+}
+
+.detailed-form-link i {
+    margin-right: 8px;
+}
+
+.contact-info {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.contact-info h4 {
+    color: var(--color-primary);
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.contact-info p {
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.contact-info a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contact-info a:hover {
+    color: var(--color-accent);
+}
+
+.contact-note {
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 500;
 }
 
 .email-section h5 {
@@ -551,7 +783,7 @@
         flex-direction: column;
     }
     
-    .final-submit-btn {
+    .final-submit-btn, .get-guide-btn {
         width: 100%;
     }
     
@@ -580,6 +812,27 @@
     .amount-main {
         font-size: 2rem;
     }
+    
+    .premium-offer {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .offer-header h5 {
+        font-size: 1.1rem;
+    }
+    
+    .offer-header p {
+        font-size: 0.85rem;
+    }
+    
+    .offer-benefits {
+        padding: 12px;
+    }
+    
+    .benefit-item {
+        font-size: 0.85rem;
+    }
 }
 </style>
 
@@ -603,7 +856,7 @@ function goToStep(stepId) {
 
 // プログレスバー更新
 function updateProgress() {
-    const progress = (currentStep / 4) * 100;
+    const progress = (currentStep / 5) * 100;
     document.getElementById('progressBar').style.width = progress + '%';
 }
 
@@ -811,23 +1064,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 最終送信
-    const submitBtn = document.querySelector('.final-submit-btn');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function() {
+    // 無料ガイド取得
+    const getGuideBtn = document.querySelector('.get-guide-btn');
+    if (getGuideBtn) {
+        getGuideBtn.addEventListener('click', function() {
             const email = document.getElementById('email').value;
             if (!email || !email.includes('@')) {
                 alert('正しいメールアドレスを入力してください');
                 return;
             }
             
+            console.log('送信データ:', {
+                email: email,
+                propertyType: formData.propertyType,
+                area: formData.area,
+                age: formData.age,
+                size: formData.size,
+                station: formData.station,
+                estimated: calculateAdvancedEstimate()
+            });
+            
             formData.email = email;
             
             // Google Analytics追跡
             if (typeof gtag !== 'undefined') {
-                gtag('event', 'form_submit', {
+                gtag('event', 'ai_assessment_guide_request', {
                     'event_category': 'engagement',
-                    'event_label': 'ai_assessment_form',
+                    'event_label': 'ai_assessment_guide',
                     'property_type': formData.propertyType,
                     'area': formData.area,
                     'age': formData.age,
@@ -836,17 +1099,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
             
-            // 次のページに移動
-            const params = new URLSearchParams({
-                email: email,
-                'property-type': formData.propertyType,
-                area: formData.area,
-                age: formData.age,
-                size: formData.size,
-                station: formData.station
-            });
-            window.location.href = `<?php echo home_url('/lead-step2/'); ?>?${params.toString()}`;
+            // AJAX送信でガイドリクエスト処理
+            sendAssessmentWithGuide(email, formData);
         });
+    }
+    
+    // 査定結果とガイド送信関数
+    function sendAssessmentWithGuide(email, assessmentData) {
+        // ローディング表示
+        const button = document.querySelector('.get-guide-btn');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 送信中...';
+        button.disabled = true;
+        
+        // AJAX送信
+        fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'ai_assessment_submit',
+                email: email,
+                property_type: assessmentData.propertyType,
+                area: assessmentData.area,
+                age: assessmentData.age,
+                size: assessmentData.size,
+                station: assessmentData.station,
+                estimated_price: calculateAdvancedEstimate().main,
+                estimated_low: calculateAdvancedEstimate().low,
+                estimated_high: calculateAdvancedEstimate().high,
+                nonce: '<?php echo wp_create_nonce('ai_assessment_nonce'); ?>'
+            })
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            return response.text();
+        })
+        .then(text => {
+            console.log('Response text:', text);
+            try {
+                const data = JSON.parse(text);
+                if (data.success) {
+                    showThankYouPage();
+                } else {
+                    console.error('Server error:', data);
+                    alert('送信に失敗しました: ' + (data.data || '不明なエラー'));
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                console.error('Response was:', text);
+                alert('サーバーエラーが発生しました。');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            alert('ネットワークエラーが発生しました。');
+            button.innerHTML = originalText;
+            button.disabled = false;
+        });
+    }
+    
+    // サンクスページ表示
+    function showThankYouPage() {
+        goToStep('step5');
     }
 });
 

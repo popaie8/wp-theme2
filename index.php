@@ -174,7 +174,7 @@ get_header();
             background: linear-gradient(135deg, 
                 rgba(26, 58, 79, 0.9) 0%, 
                 rgba(185, 141, 74, 0.8) 100%),
-                url('<?php echo get_template_directory_uri(); ?>/images/hero-bg.jpg') center/cover;
+                url('<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif') center/cover;
         }
         
         /* モバイルでは動画を無効化してパフォーマンス向上 */
@@ -1276,7 +1276,7 @@ get_header();
     <!-- ヒーローセクション -->
     <section class="hero">
         <video class="hero-video" autoplay muted loop playsinline preload="metadata" 
-               poster="<?php echo get_template_directory_uri(); ?>/images/hero-bg.jpg">
+               poster="<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif">
             <source src="<?php echo get_template_directory_uri(); ?>/videos/日本上空ドローン映像提供.mp4" type="video/mp4">
             <source src="<?php echo get_template_directory_uri(); ?>/videos/video-1750840581181.mp4" type="video/mp4">
             <source src="<?php echo get_template_directory_uri(); ?>/videos/Generated_File_June_24_2025_-_11_03PM.mp4" type="video/mp4">

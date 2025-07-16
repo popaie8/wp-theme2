@@ -1,0 +1,21 @@
+{
+    "name": "leaseback-sumitsuzuke/wp-theme",
+    "description": "WordPress theme for Leaseback Sumitsuzuke-tai",
+    "type": "wordpress-theme",
+    "require": {
+        "php": ">=7.4",
+        "tecnickcom/tcpdf": "^6.6",
+        "setasign/fpdi": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "LeasebackTheme\\": "includes/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        },
+        "optimize-autoloader": true
+    }
+}
