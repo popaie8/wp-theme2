@@ -147,6 +147,7 @@ get_header(); ?>
             color: var(--color-secondary);
             text-align: center;
             font-weight: 500;
+            text-wrap: balance;
         }
 
         /* 会社情報テーブル */
@@ -295,6 +296,12 @@ get_header(); ?>
                 font-size: 2rem;
             }
             
+            .philosophy-text {
+                font-size: 1rem;
+                line-height: 1.7;
+                text-align: left;
+            }
+            
             .access-content {
                 grid-template-columns: 1fr;
                 gap: 20px;
@@ -378,15 +385,25 @@ get_header(); ?>
             <h2 class="section-title">企業理念</h2>
             <div class="philosophy-content">
                 <p class="philosophy-text">
-                    人生の重みを背負いながらも、決して諦めない。<br><br>
+                    人生の重みを背負いながらも、<br>
+                    決して諦めない。<br><br>
                     
-                    家族との思い出が刻まれたその場所で、あなたが生き続けることを私たちは全力で支えます。<br><br>
+                    家族との思い出が刻まれたその場所で、<br>
+                    あなたが生き続けることを<br>
+                    私たちは全力で支えます。<br><br>
                     
-                    リースバックは単なる金融商品ではありません。それは、人生の再出発への希望であり、家族への愛情を形にする手段であり、未来への新たな扉を開く鍵なのです。<br><br>
+                    リースバックは単なる金融商品ではありません。<br>
+                    それは、人生の再出発への希望であり、<br>
+                    家族への愛情を形にする手段であり、<br>
+                    未来への新たな扉を開く鍵なのです。<br><br>
                     
-                    私たちは、お客様一人ひとりの物語に寄り添い、最適な選択肢を見つけ出すことで、「住み続ける」という当たり前の幸せを守り抜きます。<br><br>
+                    私たちは、お客様一人ひとりの物語に寄り添い、<br>
+                    最適な選択肢を見つけ出すことで、<br>
+                    「住み続ける」という当たり前の幸せを<br>
+                    守り抜きます。<br><br>
                     
-                    <strong>あなたの「今」を大切にし、「未来」に希望を灯す。</strong><br>
+                    <strong>あなたの「今」を大切にし、<br>
+                    「未来」に希望を灯す。</strong><br><br>
                     それが、住み続け隊の使命です。
                 </p>
             </div>
@@ -497,7 +514,8 @@ get_header(); ?>
                 <h2 class="contact-title">お気軽にお問い合わせください</h2>
                 <p class="contact-text">
                     リースバックに関するご質問・ご相談は無料です。<br>
-                    まずはお気軽にお電話またはフォームからお問い合わせください。
+                    まずはお気軽にお電話または<br>
+                    フォームからお問い合わせください。
                 </p>
                 <a href="<?php echo home_url(); ?>#assessment-form" class="contact-button">
                     無料査定を申し込む
