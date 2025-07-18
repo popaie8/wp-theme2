@@ -15,7 +15,7 @@ define('LEASEBACK_THEME_NAME', 'RealEstate Leaseback Pro');
 
 // 基本設定（カスタマイズ可能）
 if (!defined('LEASEBACK_ADMIN_EMAIL')) {
-    define('LEASEBACK_ADMIN_EMAIL', get_option('admin_email'));
+    define('LEASEBACK_ADMIN_EMAIL', 'info@sumitsuzuke-tai.jp');
 }
 if (!defined('LEASEBACK_PHONE_NUMBER')) {
     define('LEASEBACK_PHONE_NUMBER', '050-5810-5875');
@@ -852,6 +852,10 @@ function send_to_google_sheets($data) {
 // メール送信機能
 function send_notification_emails($data) {
     try {
+        // デバッグ情報追加
+        error_log('📧 メール送信開始 - send_notification_emails');
+        error_log('📧 お客様名: ' . $data['name'] . ', Email: ' . $data['email']);
+        
         // WordPress メール機能確認
         if (!function_exists('wp_mail')) {
             error_log('❌ wp_mail関数が利用できません');
@@ -861,28 +865,48 @@ function send_notification_emails($data) {
         // SMTP設定確認
         $customer_name = $data['name'];
         $customer_email = $data['email'];
-        $admin_email = get_option('leaseback_admin_email', LEASEBACK_ADMIN_EMAIL);
+        $admin_email = 'info@sumitsuzuke-tai.jp';
         
         // 管理者向けメール
         $lead_id = isset($data['lead_id']) ? $data['lead_id'] : 'N/A';
-        $admin_subject = '【' . LEASEBACK_COMPANY_NAME . '】新しい査定依頼 #' . $lead_id;
+        $admin_subject = '【株式会社クロフネチンタイ管理】新しい査定依頼 #' . $lead_id;
         $admin_message = build_admin_email_body($data, $lead_id);
         
         error_log('📧 管理者メール送信試行: ' . $admin_email);
+        error_log('📧 管理者メール件名: ' . $admin_subject);
+        
         $admin_sent = wp_mail($admin_email, $admin_subject, $admin_message, array(
             'Content-Type: text/html; charset=UTF-8'
         ));
         error_log('📧 管理者メール送信結果: ' . ($admin_sent ? '成功' : '失敗'));
         
+        // wp_mailエラーを取得
+        if (!$admin_sent) {
+            global $phpmailer;
+            if (isset($phpmailer) && is_object($phpmailer) && property_exists($phpmailer, 'ErrorInfo')) {
+                error_log('📧 PHPMailerエラー: ' . $phpmailer->ErrorInfo);
+            }
+        }
+        
         // お客様向け自動返信メール
-        $customer_subject = '【' . LEASEBACK_COMPANY_NAME . '】査定依頼を受け付けました';
+        $customer_subject = '【株式会社クロフネチンタイ管理】査定依頼を受け付けました';
         $customer_message = build_customer_email_body($data);
         
         error_log('📧 お客様メール送信試行: ' . $customer_email);
+        error_log('📧 お客様メール件名: ' . $customer_subject);
+        
         $customer_sent = wp_mail($customer_email, $customer_subject, $customer_message, array(
             'Content-Type: text/html; charset=UTF-8'
         ));
         error_log('📧 お客様メール送信結果: ' . ($customer_sent ? '成功' : '失敗'));
+        
+        // wp_mailエラーを取得
+        if (!$customer_sent) {
+            global $phpmailer;
+            if (isset($phpmailer) && is_object($phpmailer) && property_exists($phpmailer, 'ErrorInfo')) {
+                error_log('📧 PHPMailerエラー: ' . $phpmailer->ErrorInfo);
+            }
+        }
         
         if ($admin_sent && $customer_sent) {
             error_log('✅ メール送信成功（管理者・お客様両方）');
@@ -1001,8 +1025,8 @@ function build_customer_email_body($data) {
     $message .= '<p><strong>所在地:</strong> ' . esc_html($data['full_address']) . '</p>';
     
     $message .= '<hr>';
-    $message .= '<p><strong>' . LEASEBACK_COMPANY_NAME . '</strong><br>';
-    $message .= 'TEL: ' . LEASEBACK_PHONE_NUMBER . '<br>';
+    $message .= '<p><strong>株式会社クロフネチンタイ管理</strong><br>';
+    $message .= 'TEL: 050-5810-5875<br>';
     $message .= '受付時間: 9:00〜19:00（年中無休）</p>';
     
     $message .= '</body></html>';

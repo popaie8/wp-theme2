@@ -4,7 +4,7 @@
         <div class="trust-grid">
             <div class="trust-item">
                 <div class="trust-icon">
-                    <i class="fas fa-shield-check"></i>
+                    <i class="fas fa-ban"></i>
                 </div>
                 <h4>営業電話0件保証</h4>
                 <p>しつこい営業電話は一切行いません。お客様のペースを最優先します。</p>
@@ -23,7 +23,7 @@
                     <i class="fas fa-award"></i>
                 </div>
                 <h4>査定実績1,250件</h4>
-                <p>多くのお客様にご利用いただいた実績と信頼があります。</p>
+                <p>多くのお客様にご利用いただいた<br>実績と信頼があります。</p>
             </div>
             
             <div class="trust-item">
@@ -31,7 +31,7 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <h4>24時間以内に回答</h4>
-                <p>お問い合わせから24時間以内に必ずご連絡いたします。</p>
+                <p>お問い合わせから24時間以内に<br>必ずご連絡いたします。</p>
             </div>
         </div>
         

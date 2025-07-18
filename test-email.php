@@ -2,11 +2,25 @@
 /*
 Template Name: メールテスト
 */
-require_once('../../../wp-load.php');
 
-// 管理者のみアクセス可能
-if (!current_user_can('manage_options')) {
-    wp_die('権限がありません');
+// WordPress環境をロード
+$wp_load_paths = array(
+    dirname(__FILE__) . '/../../../wp-load.php',
+    dirname(__FILE__) . '/../../../../wp-load.php',
+    dirname(__FILE__) . '/../../../../../wp-load.php'
+);
+
+$wp_loaded = false;
+foreach ($wp_load_paths as $path) {
+    if (file_exists($path)) {
+        require_once($path);
+        $wp_loaded = true;
+        break;
+    }
+}
+
+if (!$wp_loaded) {
+    die('WordPress環境をロードできません');
 }
 
 $test_result = '';

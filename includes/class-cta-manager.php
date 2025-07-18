@@ -16,7 +16,7 @@ class CTAManager {
     private static $cta_configs = [
         'floating' => [
             'assessment' => [
-                'text' => '無料査定',
+                'text' => '最短即日査定',
                 'href' => '#assessment-form',
                 'icon' => 'fas fa-calculator',
                 'class' => 'cta-primary',
@@ -25,7 +25,7 @@ class CTAManager {
                 'gtag_label' => 'floating_cta'
             ],
             'line' => [
-                'text' => 'LINE相談',
+                'text' => '即時相談',
                 'href' => 'https://line.me/ti/p/@377sitjf',
                 'icon' => 'fab fa-line',
                 'class' => 'cta-line',
@@ -35,9 +35,9 @@ class CTAManager {
                 'target' => '_blank'
             ],
             'phone' => [
-                'text' => '電話相談',
+                'text' => '緊急コール',
                 'href' => 'tel:050-5810-5875',
-                'icon' => 'fas fa-phone',
+                'icon' => 'fas fa-phone-volume',
                 'class' => 'cta-phone',
                 'priority' => 3,
                 'gtag_event' => 'phone_call',
@@ -46,7 +46,7 @@ class CTAManager {
         ],
         'header' => [
             'assessment' => [
-                'text' => '無料査定',
+                'text' => '今すぐ査定',
                 'href' => '#assessment-form',
                 'icon' => '',
                 'class' => 'header-cta-btn',
@@ -57,7 +57,7 @@ class CTAManager {
         ],
         'inline' => [
             'assessment_primary' => [
-                'text' => '無料で相談・査定を依頼する',
+                'text' => '今すぐ資金調達額を確認',
                 'href' => '#assessment-form',
                 'icon' => '',
                 'class' => 'cta-button cta-primary',
@@ -66,7 +66,7 @@ class CTAManager {
                 'gtag_label' => 'inline_cta'
             ],
             'line_secondary' => [
-                'text' => 'まずLINE相談',
+                'text' => '最短即日査定を申込む',
                 'href' => 'https://line.me/ti/p/@377sitjf',
                 'icon' => 'fab fa-line',
                 'class' => 'cta-button cta-line-secondary',

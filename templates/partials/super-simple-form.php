@@ -177,14 +177,29 @@
 
 <style>
 .super-simple-form {
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 2rem);
+    padding: clamp(2rem, 5vw, 3rem);
     background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
     position: relative;
     overflow: hidden;
+}
+
+/* PC表示での最適化 */
+@media (min-width: 768px) {
+    .super-simple-form {
+        padding: 3rem 4rem;
+    }
+    
+    .form-header h3 {
+        font-size: 1.8rem;
+    }
+    
+    .no-info-required {
+        font-size: 1.1rem;
+    }
 }
 
 .super-simple-form::before {
@@ -258,6 +273,21 @@
     margin-bottom: var(--spacing-md, 1.5rem);
 }
 
+/* PC表示でのボタン配置最適化 */
+@media (min-width: 768px) {
+    .choice-buttons {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+    .choice-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 .choice-btn {
     padding: clamp(1rem, 2.5vw, 1.25rem);
     border: 2px solid #e0e0e0;
@@ -274,6 +304,24 @@
     min-height: 80px;
     justify-content: center;
     position: relative;
+}
+
+/* PC表示でのボタンサイズ調整 */
+@media (min-width: 768px) {
+    .choice-btn {
+        padding: 1.5rem 1rem;
+        min-height: 120px;
+        font-size: 1rem;
+    }
+    
+    .choice-btn i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .choice-btn span {
+        font-size: 1rem;
+    }
 }
 
 
@@ -392,6 +440,17 @@
     transition: all 0.3s ease;
     white-space: nowrap;
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+@media (min-width: 600px) {
+    .get-guide-btn {
+        width: auto;
+    }
 }
 
 .get-guide-btn:hover {
@@ -529,6 +588,13 @@
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
+    flex-direction: column;
+}
+
+@media (min-width: 600px) {
+    .email-input-group {
+        flex-direction: row;
+    }
 }
 
 .email-input-group input {
@@ -762,6 +828,41 @@
     margin-top: 10px;
 }
 
+/* PC表示での詳細入力最適化 */
+@media (min-width: 768px) {
+    .detail-inputs {
+        gap: 2rem;
+    }
+    
+    .detail-group label {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .quick-select {
+        gap: 1rem;
+    }
+    
+    .quick-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .size-input {
+        gap: 1.5rem;
+    }
+    
+    .size-display {
+        font-size: 1.3rem;
+    }
+    
+    .next-btn {
+        padding: 1.25rem 3rem;
+        font-size: 1.1rem;
+        margin-top: 2rem;
+    }
+}
+
 @media (max-width: 600px) {
     .choice-buttons {
         grid-template-columns: 1fr 1fr;
@@ -779,11 +880,7 @@
         grid-template-columns: 1fr;
     }
     
-    .email-input-group {
-        flex-direction: column;
-    }
-    
-    .final-submit-btn, .get-guide-btn {
+    .final-submit-btn {
         width: 100%;
     }
     

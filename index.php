@@ -41,10 +41,13 @@ get_header();
             margin: 0;
             padding: 0;
             font-size: 16px;
-            line-height: 1.8;
+            line-height: 1.7;
             color: var(--color-secondary);
             -webkit-font-smoothing: antialiased;
-            padding-bottom: 80px; /* フローティングCTA分の余白 */
+            padding-bottom: 85px; /* フローティングCTA分の余白 */
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%; /* iOSでのテキストサイズ調整を防ぐ */
+            font-weight: 500; /* 基本の文字を太く */
         }
 
         /* --- 固定ヘッダー --- */
@@ -53,53 +56,93 @@ get_header();
             top: 0;
             left: 0;
             width: 100%;
-            padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 3vw, 2rem);
+            padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 3rem);
             z-index: 1000;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* 左右配置 */
             align-items: center;
             box-sizing: border-box;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            background: rgba(26, 58, 79, 0.05);
+            background: rgb(26, 58, 79);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* スクロール時のヘッダー背景強化 */
+        .header.scrolled {
+            background: rgb(26, 58, 79);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
         }
         
         .header-logo {
-            font-family: var(--font-heading);
-            font-size: clamp(1rem, 2vw + 0.5rem, 1.3rem);
-            font-weight: 700;
-            color: #fff;
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            mix-blend-mode: exclusion;
+            transition: transform 0.3s ease;
+            gap: 15px;
+        }
+        
+        .header-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        /* ロゴ画像スタイル */
+        .logo-img {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            background-color: transparent;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .logo-text {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 60%;
-            flex-shrink: 1;
+            display: flex;
+            align-items: center;
+            font-family: var(--font-heading);
+        }
+        
+        .header-logo:hover .logo-img {
+            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+        }
+        
+        .header-logo:hover .logo-text {
+            color: #fff;
         }
 
+        /* ヘッダーCTA */
         .header-cta {
-            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         .header-cta a {
-            font-family: var(--font-body);
-            font-weight: 500;
+            padding: 10px 20px;
+            background: var(--color-accent);
             color: #fff;
             text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.7);
-            padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.75rem, 2vw, 1rem);
-            border-radius: 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
             transition: all 0.3s ease;
-            font-size: clamp(0.75rem, 1.5vw, 0.9rem);
             white-space: nowrap;
-            display: inline-block;
         }
-
+        
         .header-cta a:hover {
-            background-color: rgba(255,255,255,1);
-            color: var(--color-primary);
-            transform: translateY(-1px);
+            background: #A67C42;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(185, 141, 74, 0.3);
         }
 
         .header-nav {
@@ -114,34 +157,104 @@ get_header();
             box-sizing: border-box;
         }
         section {
-            padding: clamp(3rem, 8vw, 5rem) 0;
+            padding: clamp(2.5rem, 6vw, 4rem) 0;
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            position: relative;
         }
         section.visible { opacity: 1; transform: translateY(0); }
+        
+        /* セクション間の視覚的区切り */
+        section:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+            opacity: 0.3;
+        }
 
         h2, h3 {
             font-family: var(--font-heading);
-            font-weight: 700;
-            line-height: 1.6;
+            font-weight: 800;
+            line-height: 1.4;
             color: var(--color-primary);
         }
         h2.section-title {
-            font-size: clamp(1.5rem, 3vw + 0.5rem, 2.5rem);
+            font-size: clamp(1.8rem, 3.5vw + 0.5rem, 3rem);
             text-align: center;
             margin-bottom: var(--spacing-xl);
-            font-weight: 500;
-            line-height: 1.4;
-            max-width: 800px;
+            font-weight: 800;
+            line-height: 1.2;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
             text-wrap: balance;
+            position: relative;
+            padding: 1.5rem 0;
+            color: var(--color-primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2.section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(185, 141, 74, 0.3);
+        }
+        
+        /* 特別なセクションタイトル */
+        .special-section-title {
+            font-size: clamp(2rem, 4vw + 0.5rem, 3.5rem);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            margin-bottom: var(--spacing-2xl);
+            text-shadow: none;
+            position: relative;
+            padding: 2rem 0;
+        }
+        
+        .special-section-title::after {
+            width: 120px;
+            height: 6px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--color-accent), 
+                var(--color-primary), 
+                var(--color-accent), 
+                transparent);
+            box-shadow: 0 4px 12px rgba(185, 141, 74, 0.4);
+        }
+        
+        .special-section-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(185, 141, 74, 0.3), transparent);
+            border-radius: 2px;
         }
         
         /* --- ヒーローセクション（改良版） --- */
         .hero {
             height: 100vh;
+            min-height: 600px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -150,6 +263,7 @@ get_header();
             color: #fff;
             position: relative;
             overflow: hidden;
+            padding-top: 80px; /* ヘッダー分の余白を調整 */
         }
         
         .hero-video {
@@ -177,10 +291,13 @@ get_header();
                 url('<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif') center/cover;
         }
         
-        /* モバイルでは動画を無効化してパフォーマンス向上 */
+        /* モバイルでも動画を表示 */
         @media (max-width: 768px) {
             .hero-video {
-                display: none;
+                display: block;
+                object-fit: cover;
+                width: 100%;
+                height: 100%;
             }
         }
 
@@ -192,8 +309,8 @@ get_header();
             right: 0;
             bottom: 0;
             background: linear-gradient(135deg, 
-                rgba(26, 58, 79, 0.7) 0%, 
-                rgba(185, 141, 74, 0.6) 100%);
+                rgba(26, 58, 79, 0.85) 0%, 
+                rgba(185, 141, 74, 0.75) 100%);
             z-index: 2;
         }
 
@@ -202,30 +319,56 @@ get_header();
             z-index: 3;
             max-width: 900px;
             padding: 0 20px;
-            animation: fadeIn 1.5s ease-out forwards;
+            animation: fadeIn 1.2s ease-out forwards;
         }
 
         .hero-title {
             font-family: var(--font-heading);
-            font-size: clamp(1.8rem, 4vw + 0.5rem, 3.5rem);
-            font-weight: 700;
+            font-size: clamp(2rem, 4.5vw + 0.5rem, 4rem);
+            font-weight: 900;
             margin-bottom: var(--spacing-lg);
-            line-height: 1.4;
-            animation: slideUp 1s 0.5s ease-out forwards;
+            line-height: 1.3;
+            animation: slideUp 0.8s 0.3s ease-out forwards;
             opacity: 0;
-            max-width: 800px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
             text-wrap: balance;
+            text-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.7),
+                0 2px 8px rgba(0, 0, 0, 0.9),
+                0 1px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: -0.02em;
         }
         
         .hero-title .highlight {
             display: inline-block;
-            background: linear-gradient(120deg, var(--color-accent) 0%, #D4A574 100%);
+            background: linear-gradient(120deg, 
+                var(--color-accent) 0%, 
+                #D4A574 50%, 
+                #FFD700 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            font-weight: 900;
+            text-shadow: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title .highlight::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(120deg, 
+                rgba(185, 141, 74, 0.2) 0%, 
+                rgba(255, 215, 0, 0.1) 100%);
+            filter: blur(8px);
+            z-index: -1;
+            border-radius: 8px;
         }
 
         .hero-stats {
@@ -233,33 +376,38 @@ get_header();
             justify-content: center;
             gap: clamp(1rem, 3vw, 2.5rem);
             margin-bottom: var(--spacing-xl);
-            animation: fadeIn 1s 0.3s ease-out forwards;
+            animation: fadeIn 0.8s 0.5s ease-out forwards;
             opacity: 0;
             flex-wrap: wrap;
         }
         
         .stat-item {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 2vw, 1.5rem);
             border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             min-width: 100px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         }
         
         .stat-number {
             display: block;
-            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-            font-weight: 700;
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-weight: 900;
             color: #fff;
             margin-bottom: 0.25rem;
+            text-shadow: 
+                0 3px 8px rgba(0, 0, 0, 0.5),
+                0 1px 4px rgba(0, 0, 0, 0.7);
+            letter-spacing: -0.02em;
         }
         
         .stat-label {
             font-size: clamp(0.7rem, 1.5vw, 0.9rem);
             color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .hero-cta {
@@ -271,10 +419,49 @@ get_header();
             text-decoration: none;
             font-weight: 600;
             font-size: 1.1rem;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 8px 24px rgba(185, 141, 74, 0.4);
-            animation: slideUp 1s 1.1s ease-out forwards;
+            animation: fadeInUp 0.8s 0.9s ease-out forwards;
             opacity: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* PC表示でのセカンダリCTA */
+        @media (min-width: 769px) {
+            .hero-cta.secondary {
+                background: linear-gradient(135deg, #ffffff, #f8f8f8);
+                color: var(--color-primary);
+                border: 2px solid var(--color-accent);
+                box-shadow: 0 6px 20px rgba(185, 141, 74, 0.3);
+                font-weight: 700;
+            }
+            
+            .hero-cta.secondary:hover {
+                background: linear-gradient(135deg, #f8f8f8, #ffffff);
+                transform: translateY(-4px);
+                box-shadow: 0 10px 30px rgba(185, 141, 74, 0.4);
+                color: var(--color-primary);
+                border-color: #D4A574;
+            }
+        }
+        
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .hero-cta:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .hero-cta:hover {
@@ -290,7 +477,7 @@ get_header();
             gap: clamp(0.75rem, 2vw, 1.5rem);
             margin: var(--spacing-xl) 0;
             flex-wrap: wrap;
-            animation: slideUp 1s 0.8s ease-out forwards;
+            animation: slideUp 0.8s 0.7s ease-out forwards;
             opacity: 0;
         }
         
@@ -298,19 +485,22 @@ get_header();
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.25);
             padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.5rem);
             border-radius: 30px;
-            backdrop-filter: blur(10px);
-            font-size: clamp(0.85rem, 1.5vw, 1rem);
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.35);
             transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         
         .benefit-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
         }
         
         .benefit-item i {
@@ -324,21 +514,26 @@ get_header();
             gap: clamp(0.75rem, 2vw, 1.25rem);
             margin-top: var(--spacing-xl);
             flex-wrap: wrap;
-            animation: slideUp 1s 1.1s ease-out forwards;
+            animation: fadeInUp 0.8s 0.9s ease-out forwards;
             opacity: 0;
+        }
+        
+        /* アニメーション完了後の状態を保証 */
+        .hero-cta-group > * {
+            opacity: 1 !important;
         }
         
         /* スクロールダウンインジケーター */
         .scroll-down {
             position: absolute;
-            bottom: 40px;
+            bottom: 100px; /* CTAと被らないように位置を上げる */
             left: 50%;
             transform: translateX(-50%);
             z-index: 3;
             color: #fff;
             text-align: center;
             font-size: 0.8rem;
-            animation: fadeIn 2s 1.5s ease-out forwards;
+            animation: fadeIn 1.5s 1.2s ease-out forwards;
             opacity: 0;
         }
 
@@ -359,18 +554,83 @@ get_header();
 
         /* 60秒査定フォーム */
         .assessment-form {
-            background: #fff;
-            padding: 60px 0;
+            background: linear-gradient(135deg, 
+                #f8f9fa 0%, 
+                #fff 25%, 
+                #f4f2ef 50%, 
+                #fff 75%, 
+                #f8f9fa 100%);
+            padding: clamp(4rem, 10vw, 6rem) 0;
             position: relative;
+            overflow: hidden;
+        }
+        
+        .assessment-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(185, 141, 74, 0.05) 0%, 
+                transparent 60%);
+            pointer-events: none;
+        }
+        
+        .assessment-form::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(185, 141, 74, 0.3);
         }
 
         .form-container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
-            padding: clamp(1.5rem, 4vw, 2.5rem);
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: clamp(2rem, 5vw, 3rem);
+            background: linear-gradient(135deg, #fff 0%, #fefefe 100%);
+            border-radius: 24px;
+            box-shadow: 
+                0 15px 50px rgba(0,0,0,0.12),
+                0 5px 20px rgba(185, 141, 74, 0.08);
+            border: 2px solid rgba(185, 141, 74, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, 
+                var(--color-primary), 
+                var(--color-accent), 
+                var(--color-primary));
+            border-radius: 24px 24px 0 0;
+        }
+        
+        .form-container::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, 
+                rgba(185, 141, 74, 0.1) 0%, 
+                transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         .form-header {
@@ -380,9 +640,16 @@ get_header();
 
         .form-title {
             font-family: var(--font-heading);
-            font-size: 2rem;
-            color: var(--color-primary);
-            margin-bottom: 12px;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            text-align: center;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .form-subtitle {
@@ -409,15 +676,20 @@ get_header();
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: clamp(0.75rem, 2vw, 1rem);
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: clamp(0.875rem, 2vw, 1.125rem);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             font-size: 16px;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
             box-sizing: border-box;
             background: #fff;
             -webkit-appearance: none;
             appearance: none;
+        }
+        
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: #ccc;
         }
         
         .form-group select {
@@ -432,25 +704,48 @@ get_header();
         .form-group select:focus {
             outline: none;
             border-color: var(--color-accent);
+            box-shadow: 0 0 0 4px rgba(185, 141, 74, 0.1);
         }
 
         .submit-button {
             width: 100%;
             background: linear-gradient(135deg, var(--color-primary), #0F2A3F);
             color: #fff;
-            padding: clamp(1rem, 2.5vw, 1.25rem);
+            padding: clamp(1.125rem, 2.5vw, 1.375rem);
             border: none;
             border-radius: 50px;
-            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-size: clamp(1.05rem, 2vw, 1.25rem);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: var(--spacing-lg);
+            min-height: 56px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .submit-button:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         .submit-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(26, 58, 79, 0.4);
+            background: linear-gradient(135deg, #0F2A3F, var(--color-primary));
         }
 
         .form-benefits {
@@ -512,7 +807,9 @@ get_header();
             left: 0; 
             right: 0; 
             bottom: 0;
-            background-color: rgba(26, 58, 79, 0.4); 
+            background: linear-gradient(180deg, 
+                rgba(26, 58, 79, 0.5) 0%, 
+                rgba(26, 58, 79, 0.7) 100%); 
             z-index: 1;
         }
         
@@ -537,13 +834,15 @@ get_header();
 
         /* --- マンガ教育セクション --- */
         .manga-section { 
-            background-color: #fff; 
+            background: linear-gradient(180deg, #f8f9fa 0%, #fff 50%, #f8f9fa 100%);
         }
         
         .manga-box { 
             border: 2px solid #EAE2D9; 
-            border-radius: 8px; 
-            padding: 24px; 
+            border-radius: 16px; 
+            padding: clamp(1.5rem, 4vw, 2rem); 
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
         
         .manga-chat { 
@@ -563,9 +862,11 @@ get_header();
         
         .manga-chat .bubble {
             background-color: var(--color-background); 
-            border-radius: 12px;
-            padding: 16px; 
+            border-radius: 16px;
+            padding: clamp(1rem, 2vw, 1.25rem); 
             position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            line-height: 1.6;
         }
         
         .manga-chat.right { 
@@ -590,7 +891,7 @@ get_header();
         /* --- 顧客価値セクション --- */
         .customer-value-section {
             background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-            padding: var(--spacing-lg) 0;
+            padding: clamp(3rem, 8vw, 5rem) 0;
             position: relative;
         }
         
@@ -598,10 +899,13 @@ get_header();
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-primary));
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            max-width: 400px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+            border-radius: 3px;
         }
         
         .value-cards {
@@ -660,6 +964,7 @@ get_header();
         .card-stats {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: var(--spacing-xs);
             background: #f8f9fa;
             padding: var(--spacing-xs) var(--spacing-sm);
@@ -758,7 +1063,7 @@ get_header();
 
         /* --- 知識セクション --- */
         .knowledge-section { 
-            background-color: #fff; 
+            background: linear-gradient(180deg, #fff 0%, #f4f2ef 100%);
         }
         
         .merit-box, .demerit-box { 
@@ -790,13 +1095,66 @@ get_header();
         
         .sincere-promise {
             text-align: center; 
-            padding: 24px;
-            background-color: #E3EDF3; 
-            border-radius: 8px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--color-accent), #D4A574);
+            border-radius: 16px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(185, 141, 74, 0.3);
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(185, 141, 74, 0.3);
+            }
+            50% {
+                box-shadow: 0 12px 48px rgba(185, 141, 74, 0.5);
+            }
+        }
+        
+        .sincere-promise::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                transparent 70%);
+            animation: shine 3s infinite;
+        }
+        
+        .sincere-promise h3 {
+            color: #fff;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
         
         .sincere-promise p { 
-            margin: 0; 
+            margin: 0;
+            color: #fff;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.8;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* レスポンシブで「す。」だけが残らないように調整 */
+        @media (max-width: 480px) {
+            .sincere-promise p {
+                font-size: 0.95rem;
+                padding: 0 10px;
+            }
         }
 
         /* --- 代表メッセージセクション --- */
@@ -832,8 +1190,8 @@ get_header();
             right: 0;
             bottom: 0;
             background: linear-gradient(135deg, 
-                rgba(26, 58, 79, 0.7) 0%, 
-                rgba(185, 141, 74, 0.6) 100%);
+                rgba(26, 58, 79, 0.8) 0%, 
+                rgba(185, 141, 74, 0.7) 100%);
             z-index: 1;
         }
         
@@ -862,7 +1220,7 @@ get_header();
 
         /* --- 3つのお約束セクション --- */
         .promise-section { 
-            background-color: #fff; 
+            background: linear-gradient(180deg, #f4f2ef 0%, #fff 100%);
         }
         
         .promise-item { 
@@ -876,8 +1234,12 @@ get_header();
         
         .promise-item img { 
             width: 100%; 
-            border-radius: 8px; 
+            max-width: 500px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 12px; 
             margin-bottom: 24px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
         .promise-item h3 { 
@@ -887,8 +1249,9 @@ get_header();
 
         /* --- アクションセクション --- */
         .action-section { 
-            background-color: #fff; 
+            background: linear-gradient(180deg, #f8f9fa 0%, #fff 100%);
             text-align: center; 
+            padding: clamp(3rem, 8vw, 5rem) 0;
         }
         
         .action-section .container { 
@@ -969,6 +1332,85 @@ get_header();
             font-weight: 700; 
             text-decoration: none;
         }
+        
+        /* --- 新しいフローティングCTA --- */
+        .floating-cta-enhanced {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 16px 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(100%);
+            animation: slideInUp 0.4s 1s ease-out forwards;
+        }
+        
+        .floating-cta-enhanced a {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            min-height: 56px;
+            max-width: 200px;
+        }
+        
+        .floating-cta-enhanced a i {
+            font-size: 1.3em;
+        }
+        
+        .floating-cta-enhanced a span {
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+        
+        .floating-cta-enhanced .cta-primary {
+            background: linear-gradient(135deg, var(--color-accent), #D4A574);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(185, 141, 74, 0.3);
+        }
+        
+        .floating-cta-enhanced .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(185, 141, 74, 0.4);
+        }
+        
+        .floating-cta-enhanced .cta-line {
+            background: #06C755;
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(6, 199, 85, 0.3);
+        }
+        
+        .floating-cta-enhanced .cta-line:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(6, 199, 85, 0.4);
+        }
+        
+        .floating-cta-enhanced .cta-phone {
+            background: #fff;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            box-shadow: 0 3px 10px rgba(26, 58, 79, 0.1);
+        }
+        
+        .floating-cta-enhanced .cta-phone:hover {
+            background: var(--color-primary);
+            color: #fff;
+            transform: translateY(-2px);
+        }
 
         /* --- アニメーション --- */
         @keyframes fadeIn { 
@@ -1018,6 +1460,7 @@ get_header();
             
             .hero {
                 height: 90vh;
+                padding-top: 100px;
             }
             
             .hero-title {
@@ -1030,68 +1473,272 @@ get_header();
                 margin: var(--spacing-xl) auto 0;
             }
             
+            .hero-cta-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+                gap: clamp(0.5rem, 1.5vw, 0.75rem);
+                margin-top: var(--spacing-md);
+            }
+            
             .hero-cta {
                 width: 100%;
+                padding: clamp(0.875rem, 2vw, 1rem) clamp(1.25rem, 2.5vw, 1.5rem);
+                font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+                border-radius: 25px;
+                min-height: 48px;
+            }
+            
+            .hero-cta.primary {
+                box-shadow: 0 6px 20px rgba(185, 141, 74, 0.5);
+            }
+            
+            .hero-cta.secondary {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(185, 141, 74, 0.8);
+                color: var(--color-primary);
+                font-weight: 600;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .hero-cta.secondary:hover {
+                background: rgba(255, 255, 255, 1);
+                border-color: var(--color-accent);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        /* タブレット対応 */
+        @media (max-width: 1024px) {
+            :root {
+                --spacing-xs: 0.375rem;
+                --spacing-sm: 0.75rem;
+                --spacing-md: 1.25rem;
+                --spacing-lg: 1.75rem;
+                --spacing-xl: 2.25rem;
+                --spacing-2xl: 3rem;
+            }
+            
+            section {
+                padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+            }
+            
+            .hero {
+                min-height: 500px;
+                max-height: 700px;
+            }
+            
+            .hero-title {
+                font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+                line-height: 1.3;
+            }
+            
+            .hero-stats {
+                gap: clamp(0.75rem, 2vw, 1.5rem);
+            }
+            
+            h2.section-title {
+                font-size: clamp(1.6rem, 3vw, 2.2rem);
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .value-cards {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
             }
         }
         
         /* モバイル対応 */
         @media (max-width: 768px) {
-            .header {
-                padding: 12px 16px;
+            body {
+                font-size: 16px; /* モバイル用フォントサイズ */
+                line-height: 1.6; /* 行間を狭く */
+                padding-bottom: 85px; /* フローティングCTA分の余白 */
             }
             
-            .header-logo {
-                font-size: clamp(0.9rem, 4vw, 1.1rem);
-                max-width: 50%;
+            .header {
+                padding: 16px 20px;
+                background: rgba(26, 58, 79, 0.9);
+            }
+            
+            .logo-img {
+                height: 60px;
+            }
+            
+            .logo-text {
+                font-size: 17px;
+            }
+            
+            .header-cta {
+                right: 16px;
             }
             
             .header-cta a {
-                padding: 6px 12px;
-                font-size: clamp(0.7rem, 3vw, 0.8rem);
-                border-radius: 15px;
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                gap: 6px;
+            }
+            
+            .header-cta i {
+                font-size: 0.9rem;
             }
             
             .hero {
-                height: 80vh;
-                padding: 0 20px;
-                padding-top: 60px; /* ヘッダー分の余白追加 */
+                height: calc(100vh - 60px); /* ヘッダーを考慮 */
+                min-height: 450px;
+                max-height: 600px; /* 最大高さを制限 */
+                padding: 0 16px;
+                padding-top: 60px; /* ヘッダー分の余白を減らす */
             }
             
             .hero-title {
-                font-size: 2.2rem;
+                font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+                line-height: 1.25;
+                margin-bottom: var(--spacing-sm);
             }
             
             .hero-subtitle {
-                font-size: 1.1rem;
+                font-size: clamp(1rem, 3vw, 1.2rem);
             }
             
             .form-container {
-                margin: 0 20px;
-                padding: 30px 20px;
+                margin: 0 10px;
+                padding: clamp(1.25rem, 3vw, 1.5rem) clamp(1rem, 2.5vw, 1.25rem);
+                border-radius: 16px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            }
+            
+            .form-header {
+                margin-bottom: 1.5rem;
+            }
+            
+            .form-title {
+                font-size: clamp(1.3rem, 3.5vw, 1.6rem);
+                margin-bottom: 0.25rem;
+                line-height: 1.2;
+            }
+            
+            .form-subtitle {
+                font-size: clamp(0.9rem, 2vw, 1rem);
+                line-height: 1.4;
+            }
+            
+            .form-group {
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .form-group label {
+                font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+                margin-bottom: 4px;
+                font-weight: 600;
+            }
+            
+            .form-group input,
+            .form-group select {
+                font-size: 16px; /* iOSのズームを防ぐ */
+                padding: clamp(0.75rem, 1.8vw, 0.875rem);
+                border-radius: 10px;
+            }
+            
+            .submit-button {
+                font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+                padding: clamp(0.875rem, 2vw, 1rem);
+                min-height: 48px;
+                border-radius: 25px;
+                margin-top: var(--spacing-md);
             }
             
             .form-benefits {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            /* モバイルでの調整 */
-            :root {
-                --container-padding: 16px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 16px;
             }
             
-            .hero-title {
-                font-size: clamp(1.5rem, 5vw, 2.2rem);
+            .form-benefits li {
+                font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+                gap: 6px;
+            }
+
+            /* モバイルでの調整 - コンパクト化 */
+            :root {
+                --container-padding: 16px;
+                --spacing-xs: 0.25rem;
+                --spacing-sm: 0.5rem;
+                --spacing-md: 1rem;
+                --spacing-lg: 1.5rem;
+                --spacing-xl: 2rem;
+                --spacing-2xl: 2.5rem;
+            }
+            
+            section {
+                padding: clamp(2rem, 5vw, 3rem) 0;
+            }
+            
+            /* セクション間の区切り線をモバイルでは非表示 */
+            section:not(:last-child)::after {
+                display: none;
+            }
+            
+            h2.section-title {
+                font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+                margin-bottom: var(--spacing-md);
+                padding-bottom: 0.5rem;
+                line-height: 1.3;
+            }
+            
+            h2.section-title::after {
+                width: 40px;
+                height: 2px;
+            }
+            
+            .hero-stats {
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-evenly;
+                gap: clamp(0.5rem, 1.5vw, 0.75rem);
+                margin-bottom: var(--spacing-sm);
             }
             
             .stat-item {
                 min-width: 85px;
+                padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.5rem, 1.5vw, 0.75rem);
+                border-radius: 10px;
+            }
+            
+            .stat-number {
+                font-size: clamp(1.1rem, 3vw, 1.5rem);
+                font-weight: 700;
+            }
+            
+            .stat-label {
+                font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+                line-height: 1.2;
+            }
+            
+            .hero-benefits {
+                gap: clamp(0.4rem, 1vw, 0.6rem);
+                margin: var(--spacing-sm) 0;
             }
             
             .benefit-item {
-                flex: 1 1 100%;
+                flex: 1 1 auto;
                 justify-content: center;
+                min-height: 38px;
+                font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+                padding: 0.5rem 0.75rem;
+                gap: 0.4rem;
+            }
+            
+            .benefit-item i {
+                font-size: 1em;
             }
 
             .action-section .container { 
@@ -1111,6 +1758,29 @@ get_header();
             .floating-cta .cta-button { 
                 font-size: 1rem; 
                 padding: 14px 16px;
+            }
+            
+            /* モバイルでの新フローティングCTA */
+            .floating-cta-enhanced {
+                padding: 14px 16px;
+                gap: 8px;
+            }
+            
+            .floating-cta-enhanced a {
+                font-size: 1rem;
+                padding: 14px 16px;
+                gap: 6px;
+                min-height: 52px;
+                max-width: 170px;
+                font-weight: 700;
+            }
+            
+            .floating-cta-enhanced a i {
+                font-size: 1.2em;
+            }
+            
+            .floating-cta-enhanced a span {
+                font-size: 0.95rem;
             }
             
             /* 顧客価値セクションのレスポンシブ */
@@ -1156,48 +1826,58 @@ get_header();
         }
 
         @media (max-width: 480px) {
-            .header {
-                padding: 10px 12px;
+            body {
+                font-size: 17px;
             }
             
-            .header-logo {
-                font-size: clamp(0.8rem, 5vw, 1rem);
-                max-width: 45%;
+            .header {
+                padding: 14px 16px;
+                background: rgba(26, 58, 79, 0.95);
+            }
+            
+            .logo-img {
+                height: 50px;
+            }
+            
+            .logo-text {
+                font-size: 15px;
+            }
+            
+            .header-cta {
+                display: flex; /* 小画面でも表示 */
+                right: 10px;
             }
             
             .header-cta a {
-                padding: 5px 10px;
-                font-size: clamp(0.6rem, 3.5vw, 0.75rem);
-                border-radius: 12px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
             
             .hero {
-                padding-top: 50px; /* さらに小さなヘッダー分の余白 */
+                padding-top: 70px; /* 小画面用のヘッダー余白 */
+                min-height: 500px;
             }
             
             .hero-title {
-                font-size: 2rem;
+                font-size: clamp(1.6rem, 6vw, 2.2rem);
+                line-height: 1.25;
             }
             
             .hero-subtitle {
-                font-size: 1rem;
+                font-size: clamp(0.95rem, 3vw, 1.1rem);
             }
 
-            /* 小画面での調整 */
-            .hero {
-                min-height: 600px;
+            /* スクロールダウンインジケーターの調整 */
+            .scroll-down {
+                display: none; /* モバイルでは非表示にする */
             }
             
-            .hero-cta-group {
-                width: 100%;
-                padding: 0 var(--spacing-sm);
+            .scroll-down .arrow {
+                height: 35px;
+                margin-top: 8px;
             }
             
-            .form-container {
-                margin: 0;
-                border-radius: 0;
-                box-shadow: none;
-            }
+            /* 重複したスタイルを削除 */
 
             .action-section .container { 
                 padding: 0 12px 40px; 
@@ -1217,44 +1897,389 @@ get_header();
                 padding: 12px 14px;
             }
             
+            /* 小画面での新フローティングCTA */
+            .floating-cta-enhanced {
+                padding: 12px 10px;
+                gap: 6px;
+            }
+            
+            .floating-cta-enhanced a {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+                gap: 4px;
+                min-height: 48px;
+                max-width: 140px;
+                border-radius: 25px;
+                font-weight: 700;
+            }
+            
+            .floating-cta-enhanced a i {
+                font-size: 1.1em;
+            }
+            
+            .floating-cta-enhanced a span {
+                font-size: 0.9rem;
+            }
+            
+            .floating-cta-enhanced .cta-phone {
+                border-width: 2px;
+            }
+            
             /* 小画面での顧客価値セクション */
+            .value-cards {
+                gap: 0.875rem;
+            }
+            
             .value-card {
-                padding: 1rem;
+                padding: 0.875rem;
+                border-radius: 12px;
             }
             
             .card-icon {
-                font-size: 2rem;
+                font-size: 1.75rem;
+                margin-bottom: 0.5rem;
             }
             
             .value-card h3 {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.3;
             }
             
             .value-card p {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                line-height: 1.5;
+                margin-bottom: 0.75rem;
             }
             
             .card-stats {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
+                align-items: flex-end;
+                gap: 0.125rem;
+                margin-top: 0.5rem;
+            }
+            
+            .stat-label,
+            .stat-value {
+                font-size: 0.75rem;
+            }
+            
+            .testimonial-grid {
+                gap: 0.875rem;
             }
             
             .testimonial-card {
-                padding: 1rem;
+                padding: 0.875rem;
+                border-radius: 10px;
             }
             
             .testimonial-content p {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                line-height: 1.5;
+                margin-bottom: 0.75rem;
+            }
+            
+            .testimonial-author {
+                gap: 0.25rem;
             }
             
             .author-name {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                line-height: 1.2;
             }
             
             .author-case {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
             }
+        }
+
+        /* フッター */
+        .footer {
+            background: var(--color-primary);
+            color: #fff;
+            padding: 60px 0 20px;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .footer-logo h3 {
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+            font-family: var(--font-heading);
+        }
+        
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+        }
+        
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .footer {
+                padding: 40px 0 20px;
+                margin-top: 60px;
+            }
+            
+            .footer-content {
+                margin-bottom: 30px;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px 0;
+                align-items: center;
+            }
+            
+            .footer-links a {
+                text-align: center;
+                padding: 5px 0;
+            }
+        }
+
+        /* 🎯 動きと魅力的なアニメーション */
+        
+        /* フローティングアニメーション */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* パルスアニメーション */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* グラデーション移動 */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* 光の効果 */
+        @keyframes shine {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        /* フェードイン上昇 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* セクションタイトルにアニメーション追加 */
+        h2.section-title {
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        h2.section-title.special-section-title {
+            background-size: 200% 200%;
+            animation: fadeInUp 0.8s ease-out, gradientShift 3s ease-in-out infinite;
+        }
+        
+        /* フォームコンテナに魅力的な動き */
+        .form-container {
+            transition: all 0.4s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .form-container:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.15),
+                0 8px 25px rgba(185, 141, 74, 0.2);
+        }
+        
+        /* 統計カードにフローティング効果 */
+        .stat-item {
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-item:nth-child(1) { animation-delay: 0s; }
+        .stat-item:nth-child(2) { animation-delay: 1s; }
+        .stat-item:nth-child(3) { animation-delay: 2s; }
+        
+        .stat-item:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+        
+        /* CTAボタンに脈動効果 */
+        .hero-cta.primary {
+            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-cta.primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 2s linear infinite;
+        }
+        
+        /* 価値カードにホバー効果 */
+        .value-card {
+            transition: all 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .value-card:hover .card-icon {
+            transform: scale(1.2);
+        }
+        
+        /* お客様の声カードに波動効果 */
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+        
+        /* ヘッダーCTAにホバー効果強化 */
+        .header-cta a {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-cta a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .header-cta a:hover::before {
+            left: 100%;
+        }
+        
+        /* フローティングCTAに動き */
+        .floating-cta-enhanced {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .floating-cta-enhanced a {
+            transition: all 0.3s ease;
+        }
+        
+        .floating-cta-enhanced a:hover {
+            transform: scale(1.1);
+        }
+        
+        /* セクション表示時のアニメーション */
+        section {
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        section:nth-child(1) { animation-delay: 0.1s; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.3s; }
+        section:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* スクロール時のパララックス効果（軽量版） */
+        .hero {
+            background-attachment: fixed;
+        }
+        
+        /* アイコンに回転効果 */
+        .trust-icon i {
+            transition: transform 0.3s ease;
+        }
+        
+        .trust-item:hover .trust-icon i {
+            transform: scale(1.1);
+        }
+        
+        /* 3つのお約束の画像にズーム効果 */
+        .promise-item img {
+            transition: transform 0.4s ease;
+        }
+        
+        .promise-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* フォーム入力フィールドにフォーカス効果 */
+        .form-group input:focus,
+        .form-group select:focus {
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+        
+        /* パフォーマンス最適化 */
+        * {
+            will-change: auto;
+        }
+        
+        .form-container,
+        .stat-item,
+        .value-card,
+        .hero-cta.primary {
+            will-change: transform;
         }
     </style>
 </head>
@@ -1263,9 +2288,14 @@ get_header();
     <!-- ヘッダー -->
     <header class="header">
         <a href="<?php echo home_url(); ?>" class="header-logo">
-            <?php bloginfo('name'); ?>
+            <img src="<?php echo get_template_directory_uri(); ?>/images/logo-sumitsuzuke.png.png" alt="住み続け隊" class="logo-img">
+            <span class="logo-text">リースバックの住み続け隊</span>
         </a>
-        <?php CTAManager::render_header_cta(); ?>
+        <div class="header-cta">
+            <a href="#super-simple-form" onclick="CTAManager.trackClick('header_ai_diagnosis')">
+                <i class="fas fa-search"></i> 簡易診断
+            </a>
+        </div>
         <nav class="header-nav" style="display: none;">
             <a href="<?php echo home_url('/company/'); ?>">会社概要</a>
             <a href="<?php echo home_url('/privacy/'); ?>">プライバシーポリシー</a>
@@ -1286,51 +2316,49 @@ get_header();
         <div class="hero-content">
             <div class="hero-stats">
                 <div class="stat-item">
-                    <span class="stat-number">2,800万円</span>
-                    <span class="stat-label">平均査定額</span>
+                    <span class="stat-number">最短即日</span>
+                    <span class="stat-label">査定完了</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">97%</span>
-                    <span class="stat-label">満足度</span>
+                    <span class="stat-number">平均7日</span>
+                    <span class="stat-label">資金調達</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">1,250件</span>
-                    <span class="stat-label">査定実績</span>
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">事業継続率</span>
                 </div>
             </div>
             
             <h1 class="hero-title">
-                住み慣れた我が家で、<span class="highlight">安心の老後資金を確保</span>
+                <strong>最短7日で資金調達。</strong><br><span class="highlight">自宅に住みながら、<br>ビジネスチャンスを掴む</span>
             </h1>
             
             <div class="hero-benefits">
                 <div class="benefit-item">
-                    <i class="fas fa-home"></i>
-                    <span>今の家にそのまま住める</span>
+                    <span>スピード査定・即日回答</span>
                 </div>
                 <div class="benefit-item">
-                    <i class="fas fa-yen-sign"></i>
-                    <span>まとまった資金が手に入る</span>
+                    <i class="fas fa-building"></i>
+                    <span>事業継続しながら資金調達</span>
                 </div>
                 <div class="benefit-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>営業電話は一切なし</span>
+                    <span>銀行融資より圧倒的に早い</span>
                 </div>
             </div>
             
             <div class="hero-cta-group">
                 <a href="#super-simple-form" class="hero-cta primary">
-                    <i class="fas fa-calculator"></i>
-                    10秒で概算査定
+                    <i class="fas fa-chart-line"></i>
+                    今すぐ資金調達額を確認
                 </a>
                 <a href="tel:050-5810-5875" class="hero-cta secondary">
-                    <i class="fas fa-phone"></i>
-                    電話で相談
+                    <i class="fas fa-phone-volume"></i>
+                    緊急相談ホットライン
                 </a>
             </div>
         </div>
         <div class="scroll-down">
-            まずは概算をチェック
+            最短即日で資金調達可能
             <div class="arrow"></div>
         </div>
     </section>
@@ -1406,22 +2434,23 @@ get_header();
     <!-- マンガ教育セクション -->
     <section class="manga-section">
         <div class="container">
-            <h2 class="section-title">1分でわかる リースバックって、なあに？</h2>
+            <h2 class="section-title">1分でわかる<br>リースバックって、なあに？</h2>
             <div class="manga-box">
                 <div class="manga-chat"><div class="icon">🤔</div><div class="bubble"><p>家に住み続けたい…でも、将来のためのお金も必要じゃ…。どうしたものか…</p></div></div>
                 <div class="manga-chat right"><div class="bubble"><p>そんなお悩みに、<strong>「リースバック」</strong>という方法があるんですよ。</p></div><div class="icon">💡</div></div>
                 <div class="manga-chat"><div class="icon">🤔</div><div class="bubble"><p>リース…バック…？</p></div></div>
                 <div class="manga-chat right"><div class="bubble"><p>はい。お客様の今の家を、私たちが一度買い取らせていただき、<strong>まとまったお金</strong>をお渡しします。</p></div><div class="icon">💡</div></div>
-                <div class="manga-chat right"><div class="bubble"><p>その後は、私たちに<strong>毎月の家賃</strong>をお支払いいただくことで、今の家に<strong>そのまま住み続けて</strong>いただけるんです。</p></div><div class="icon">💡</div></div>
+                <div class="manga-chat right"><div class="bubble"><p>その後は、私たちに<strong>毎月の家賃</strong>をお支払いいただくことで、今の家に<strong>そのまま住み続けていただけるんです。</strong></p></div><div class="icon">💡</div></div>
                 <div class="manga-chat"><div class="icon">😮</div><div class="bubble"><p>まあ！家に住み続けられるのに、お金が手に入るのか！</p></div></div>
             </div>
-            <div class="manga-summary">つまり…<br>「住み慣れた家はそのまま」で<br>「まとまった資金を得られる」仕組みです。</div>
+            <div class="manga-summary">つまり…住み慣れた家はそのままで、まとまった資金を得られる仕組みです。</div>
         </div>
     </section>
 
     <!-- AI査定フォーム（最適位置） -->
     <section id="super-simple-form" class="assessment-form">
         <div class="container">
+            <h2 class="section-title special-section-title">🤖 AI査定で即座に概算額をチェック</h2>
             <?php include get_template_directory() . '/templates/partials/super-simple-form.php'; ?>
         </div>
     </section>
@@ -1429,36 +2458,33 @@ get_header();
     <!-- 統合ストーリー・顧客価値セクション -->
     <section class="customer-value-section">
         <div class="container">
-            <h2 class="section-title">リースバックで叶える、3つの安心</h2>
+            <h2 class="section-title">リースバックで実現する、3つのビジネスメリット</h2>
             
             <div class="value-cards">
                 <div class="value-card">
-                    <div class="card-icon">👴</div>
-                    <h3>穏やかな老後を送るための、資金という安心</h3>
-                    <p>住み慣れた家に住み続けながら、まとまった資金を手にできます。老後の生活費や医療費の心配から解放されます。</p>
+                    <h3>スピード重視の資金調達</h3>
+                    <p>最短即日で査定完了、平均7日で資金調達。銀行融資より圧倒的に早く、ビジネスチャンスを逃しません。</p>
                     <div class="card-stats">
-                        <span class="stat-label">平均調達額</span>
-                        <span class="stat-value">1,200万円</span>
+                        <span class="stat-label">最短調達</span>
+                        <span class="stat-value">3日</span>
                     </div>
                 </div>
                 
                 <div class="value-card">
-                    <div class="card-icon">🏢</div>
-                    <h3>事業を守り、未来へ繋ぐための、賢い資金調達</h3>
-                    <p>事業の運転資金や設備投資に必要な資金を、不動産を活用して調達。事業継続と成長を支援します。</p>
+                    <h3>柔軟な返済・買戻しオプション</h3>
+                    <p>事業が軌道に乗ったら買い戻し可能。賃料は経費計上可能で、資金繰りに合わせた条件設定ができます。</p>
                     <div class="card-stats">
-                        <span class="stat-label">最短期間</span>
-                        <span class="stat-value">2週間</span>
+                        <span class="stat-label">買戻し実績</span>
+                        <span class="stat-value">45%</span>
                     </div>
                 </div>
                 
                 <div class="value-card">
-                    <div class="card-icon">👨‍👩‍👧‍👦</div>
-                    <h3>子供たちへ、負担ではなく円満な資産の引継ぎを</h3>
-                    <p>相続時の負担を軽減し、家族間のトラブルを防ぎます。将来の買い戻しオプションで柔軟な相続対策も可能です。</p>
+                    <h3>事業と生活の両立</h3>
+                    <p>自宅兼事務所でも利用可能。引っ越し不要で事業継続、家族への影響を最小限に抑えます。</p>
                     <div class="card-stats">
-                        <span class="stat-label">満足度</span>
-                        <span class="stat-value">98%</span>
+                        <span class="stat-label">事業継続率</span>
+                        <span class="stat-value">85%</span>
                     </div>
                 </div>
             </div>
@@ -1468,11 +2494,11 @@ get_header();
                 <div class="testimonial-grid">
                     <div class="testimonial-card">
                         <div class="testimonial-content">
-                            <p>「住み慣れた家に住み続けながら、老後資金を確保できました。スタッフの対応も親切で安心してお任せできました。」</p>
+                            <p>「コロナ禍で急激に運転資金が必要になりました。銀行融資を待つ余裕がない中、1週間で資金調達でき、店舗を守れました。」</p>
                         </div>
                         <div class="testimonial-author">
-                            <span class="author-name">田中様（70代・東京都）</span>
-                            <span class="author-case">老後資金確保</span>
+                            <span class="author-name">佐藤様（40代・飲食店経営）</span>
+                            <span class="author-case">緊急運転資金</span>
                         </div>
                     </div>
                     
@@ -1488,18 +2514,18 @@ get_header();
                     
                     <div class="testimonial-card">
                         <div class="testimonial-content">
-                            <p>「相続対策で利用しました。子供たちに負担をかけることなく、円満に資産を整理できて本当に良かったです。」</p>
+                            <p>「新規物件の買付タイミングを逃したくなく、自宅を活用しました。5日で査定が完了し、優良物件への投資が実現しました。」</p>
                         </div>
                         <div class="testimonial-author">
-                            <span class="author-name">鈴木様（60代・千葉県）</span>
-                            <span class="author-case">相続対策</span>
+                            <span class="author-name">鈴木様（50代・不動産投資家）</span>
+                            <span class="author-case">投資資金調達</span>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="section-cta">
-                <p class="cta-subtitle">あなたの状況に合わせた最適なプランをご提案します</p>
+                <p class="cta-subtitle">ビジネスの成長ステージに合わせた最適な資金調達をサポート</p>
                 <?php CTAManager::render_cta_group(['primary', 'line']); ?>
             </div>
         </div>
@@ -1518,8 +2544,8 @@ get_header();
                 <ul><li>所有権がなくなるため、売却価格は相場より低めになる</li><li>賃貸契約となるため、毎月の家賃が発生する</li><li>買い戻し価格は、売却価格より高くなる場合が多い</li></ul>
             </div>
             <div class="sincere-promise">
-                <h3>だからこそ、私たちがいます。</h3>
-                <p>私たちは、お客様にとって本当にリースバックが最良の選択なのか、専門家の視点から、誠実にお伝えすることをお約束します。</p>
+                <h3>だからこそ、<br>私たちがいます。</h3>
+                <p>お客様にとって本当にリースバックが最良の選択なのか、私たちは専門家の視点から誠実にお伝えします。</p>
             </div>
         </div>
     </section>
@@ -1534,8 +2560,8 @@ get_header();
         </video>
         <div class="container">
             <h2 class="section-title">私たちの想い</h2>
-            <p style="text-align: left;">お客様の「家」は、単なる資産ではありません。<br>そこには、計り知れないほどの時間と、思い出と、人生そのものが刻まれています。<br><br>私たちは、その価値に深い敬意を払い、お客様一人ひとりの物語に、真摯に寄り添うことをお約束いたします。<br><br>リースバックという選択が、お客様の未来をより豊かに、より安心できるものにするための一助となれば、これに勝る喜びはありません。</p>
-            <p class="signature">リースバック住み続け隊<br>代表取締役 黒江 貴裕</p>
+            <p style="text-align: left;">ビジネスにおいて、タイミングは成功の鍵です。資金調達のスピードが、新たなチャンスを掴むか逃すかを決定します。<br><br>私たちは、経営者の皆様が直面する資金調達の課題を深く理解しています。銀行融資の審査を待つ間に、貴重な機会を失うことがあってはなりません。<br><br>リースバックは、スピーディーかつ柔軟な資金調達手段として、皆様のビジネスの成長と継続を力強くサポートします。</p>
+            <p class="signature">リースバック住み続け隊</p>
         </div>
     </section>
 
@@ -1543,9 +2569,9 @@ get_header();
     <section class="promise-section">
         <div class="container">
             <h2 class="section-title">リースバック住み続け隊 3つのお約束</h2>
-            <div class="promise-item"><img src="<?php echo get_template_directory_uri(); ?>/images/光が差し込むイメージ.avif" alt="光が差し込むイメージ"><h3>1. 最高の条件を、追求します</h3><p>私たちは、複数の提携企業の中から、お客様の家の価値を最大限に評価し、最も有利な条件をご提案できる会社を見つけ出します。</p></div>
-            <div class="promise-item"><img src="https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=870" alt="真摯に向き合う手元のイメージ"><h3>2. 専門家として、誠実です</h3><p>数字の裏にあるお客様の想いを理解し、メリットだけでなくご注意いただきたい点も全てお伝えした上で、最適なプランを設計します。</p></div>
-            <div class="promise-item"><img src="<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif" alt="家の土台のイメージ"><h3>3. 揺るぎない安心を、お約束します</h3><p>しつこい営業や不要なご連絡は一切行いません。お客様ご自身のペースで、じっくりとご決断いただける環境をお守りします。</p></div>
+            <div class="promise-item"><img src="<?php echo get_template_directory_uri(); ?>/images/光が差し込むイメージ.avif" alt="光が差し込むイメージ"><h3>1. スピードと確実性を重視</h3><p>最短即日で査定完了、平均7日で資金調達。ビジネスの重要なタイミングを逃さないよう、迅速かつ確実なサポートをお約束します。</p></div>
+            <div class="promise-item"><img src="https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=870" alt="真摯に向き合う手元のイメージ"><h3>2. 事業に最適な条件設計</h3><p>賃料の経費計上、買戻しオプション、資金繰りに合わせた返済計画など、事業の成長ステージに応じた柔軟な条件を設計します。</p></div>
+            <div class="promise-item"><img src="<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif" alt="家の土台のイメージ"><h3>3. 信頼と実績のネットワーク</h3><p>複数の金融機関、不動産会社との提携により、最高の資金調達条件を実現。事業継続率85%の実績が、私たちの信頼性を証明しています。</p></div>
         </div>
     </section>
 
@@ -1559,32 +2585,20 @@ get_header();
             お使いのブラウザは動画をサポートしていません。
         </video>
         <div class="final-message-content">
-            <h2>あなたの家の物語を、未来へ。</h2>
-            <p>愛着ある、この家と、これからも。<br>その想いを、私たちはお守りします。</p>
+            <h2>あなたの家の物語を<br>未来へ</h2>
+            <p>愛着ある、この家と、これからも。その想いを、私たちはお守りします。</p>
         </div>
     </section>
 
-    <!-- アクションセクション -->
-    <section class="action-section" id="contact">
-        <div class="container">
-            <h2 class="section-title">最初の一歩</h2>
-            <p class="lead-text">お客様のペースを何よりも大切にします。しつこい営業は一切行わないことを、固くお約束いたします。</p>
-            <a href="#assessment-form" class="cta-button">無料で相談・査定を依頼する</a>
-            <div class="tel-area">
-                <p>お電話でのご相談をご希望の方へ</p>
-                <a href="tel:050-5810-5875">📞 050-5810-5875</a>
-                <p style="font-size:0.8rem; margin-top:8px;">（受付時間：9:00〜19:00 年中無休）</p>
-            </div>
-        </div>
-    </section>
+    <!-- アクションセクション削除 - CTAが重複のため -->
 
     <!-- 信頼性インジケーター -->
     <?php include get_template_directory() . '/templates/partials/trust-indicators.php'; ?>
 
-
-    <!-- 従来のフォーム（A/Bテスト用に残す） -->
+    <!-- メインフォーム（詳細査定への入口） -->
     <section id="assessment-form" class="assessment-form">
         <div class="container">
+            <h2 class="section-title special-section-title">💰 詳細査定で正確な資金調達額を算出</h2>
             <div class="form-container">
                 <header class="form-header">
                     <h2 class="form-title">60秒で概算査定額をチェック</h2>
@@ -1629,7 +2643,7 @@ get_header();
                     <ul class="form-benefits">
                         <li><i class="fas fa-check-circle"></i> 完全無料・匿名査定</li>
                         <li><i class="fas fa-lock"></i> SSL暗号化通信で安心</li>
-                        <li><i class="fas fa-bolt"></i> 最大10社に一括依頼</li>
+                        <li><i class="fas fa-network-wired"></i> 最大10社に一括依頼</li>
                     </ul>
                 </div>
             </div>
@@ -1639,9 +2653,41 @@ get_header();
     <!-- フローティングCTA -->
     <?php CTAManager::render_floating_cta(); ?>
 
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="<?php echo home_url('/company/'); ?>">会社概要</a>
+                <a href="<?php echo home_url('/privacy/'); ?>">プライバシーポリシー</a>
+                <a href="<?php echo home_url('/terms/'); ?>">利用規約</a>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> リースバック住み続け隊 All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
     <script>
         // スムーススクロールとフォーム処理
         document.addEventListener('DOMContentLoaded', function() {
+            // ヘッダーのスクロール処理
+            const header = document.querySelector('.header');
+            let lastScrollY = window.scrollY;
+            
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.scrollY;
+                
+                // スクロール位置が50px以上でヘッダー背景を変更
+                if (currentScrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                lastScrollY = currentScrollY;
+            });
+            
             // セクション表示アニメーション
             const sections = document.querySelectorAll('section');
             const observerOptions = {
