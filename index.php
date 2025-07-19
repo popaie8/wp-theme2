@@ -13,219 +13,21 @@ get_header();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php wp_title('|', true, 'right'); bloginfo('name'); ?></title>
     <?php wp_head(); ?>
+    <!-- CSS読み込み -->
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/main.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/pages/animations.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/pages/header.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/pages/sections.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/pages/landing.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/pages/footer.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/pages/floating-cta.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/cta-system.css">
+    
     <style>
-        :root {
-            --color-primary: #1A3A4F; /* 深い紺色 */
-            --color-secondary: #333333; /* テキスト */
-            --color-accent: #B98D4A;  /* 上品なゴールド/ブラウン */
-            --color-background: #F4F2EF; /* 柔らかいベージュ */
-            --font-body: 'Noto Sans JP', sans-serif;
-            --font-heading: 'Noto Serif JP', serif;
-            /* スペーシングシステム */
-            --spacing-xs: 0.5rem;
-            --spacing-sm: 1rem;
-            --spacing-md: 1.5rem;
-            --spacing-lg: 2rem;
-            --spacing-xl: 3rem;
-            --spacing-2xl: 4rem;
-            /* コンテナ幅 */
-            --container-max: 1200px;
-            --container-padding: 24px;
-        }
 
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: var(--font-body);
-            background-color: var(--color-background);
-            margin: 0;
-            padding: 0;
-            font-size: 16px;
-            line-height: 1.7;
-            color: var(--color-secondary);
-            -webkit-font-smoothing: antialiased;
-            padding-bottom: 85px; /* フローティングCTA分の余白 */
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%; /* iOSでのテキストサイズ調整を防ぐ */
-            font-weight: 500; /* 基本の文字を太く */
-        }
-
-        /* --- 固定ヘッダー --- */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 3rem);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between; /* 左右配置 */
-            align-items: center;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-            background: rgb(26, 58, 79);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
+        /* 重複削除済み - 外部CSSファイルに移動 */
         
-        /* スクロール時のヘッダー背景強化 */
-        .header.scrolled {
-            background: rgb(26, 58, 79);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-        }
-        
-        .header-logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-            gap: 15px;
-        }
-        
-        .header-logo:hover {
-            transform: scale(1.05);
-        }
-        
-        /* ロゴ画像スタイル */
-        .logo-img {
-            height: 70px;
-            width: auto;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-            background-color: transparent;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-        }
-        
-        .logo-text {
-            color: #fff;
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            font-family: var(--font-heading);
-        }
-        
-        .header-logo:hover .logo-img {
-            filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
-        }
-        
-        .header-logo:hover .logo-text {
-            color: #fff;
-        }
-
-        /* ヘッダーCTA */
-        .header-cta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        
-        .header-cta a {
-            padding: 10px 20px;
-            background: var(--color-accent);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .header-cta a:hover {
-            background: #A67C42;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(185, 141, 74, 0.3);
-        }
-
-        .header-nav {
-            display: none;
-        }
-
-        .container { 
-            max-width: var(--container-max);
-            margin: 0 auto;
-            padding: 0 var(--container-padding);
-            width: 100%;
-            box-sizing: border-box;
-        }
-        section {
-            padding: clamp(2.5rem, 6vw, 4rem) 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-            position: relative;
-        }
-        section.visible { opacity: 1; transform: translateY(0); }
-        
-        /* セクション間の視覚的区切り */
-        section:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
-            opacity: 0.3;
-        }
-
-        h2, h3 {
-            font-family: var(--font-heading);
-            font-weight: 800;
-            line-height: 1.4;
-            color: var(--color-primary);
-        }
-        h2.section-title {
-            font-size: clamp(1.8rem, 3.5vw + 0.5rem, 3rem);
-            text-align: center;
-            margin-bottom: var(--spacing-xl);
-            font-weight: 800;
-            line-height: 1.2;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            text-wrap: balance;
-            position: relative;
-            padding: 1.5rem 0;
-            color: var(--color-primary);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        h2.section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
-            border-radius: 4px;
-            box-shadow: 0 2px 8px rgba(185, 141, 74, 0.3);
-        }
-        
-        /* 特別なセクションタイトル */
-        .special-section-title {
-            font-size: clamp(2rem, 4vw + 0.5rem, 3.5rem);
-            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 900;
-            margin-bottom: var(--spacing-2xl);
-            text-shadow: none;
-            position: relative;
-            padding: 2rem 0;
-        }
+        /* 削除 - sections.cssで対応済み */
         
         .special-section-title::after {
             width: 120px;
@@ -595,7 +397,7 @@ get_header();
             max-width: 650px;
             margin: 0 auto;
             padding: clamp(2rem, 5vw, 3rem);
-            background: linear-gradient(135deg, #fff 0%, #fefefe 100%);
+            background: #f8f9fa;
             border-radius: 24px;
             box-shadow: 
                 0 15px 50px rgba(0,0,0,0.12),
@@ -709,10 +511,10 @@ get_header();
 
         .submit-button {
             width: 100%;
-            background: linear-gradient(135deg, var(--color-primary), #0F2A3F);
-            color: #fff;
+            background: #fff;
+            color: var(--color-primary);
             padding: clamp(1.125rem, 2.5vw, 1.375rem);
-            border: none;
+            border: 2px solid var(--color-accent);
             border-radius: 50px;
             font-size: clamp(1.05rem, 2vw, 1.25rem);
             font-weight: 600;
@@ -744,8 +546,8 @@ get_header();
 
         .submit-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(26, 58, 79, 0.4);
-            background: linear-gradient(135deg, #0F2A3F, var(--color-primary));
+            box-shadow: 0 8px 24px rgba(185, 141, 74, 0.4);
+            background: #f8f9fa;
         }
 
         .form-benefits {
@@ -1238,13 +1040,18 @@ get_header();
             margin: 0 auto;
             display: block;
             border-radius: 12px; 
-            margin-bottom: 24px; 
+            margin-top: 24px; 
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
         .promise-item h3 { 
             font-size: 1.8rem; 
             margin-bottom: 16px; 
+        }
+        
+        .promise-item p {
+            margin-bottom: 0;
+            line-height: 1.8;
         }
 
         /* --- アクションセクション --- */
@@ -1293,148 +1100,11 @@ get_header();
             text-decoration: none;
         }
 
-        /* --- フローティングCTA --- */
-        .floating-cta {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0;
-            background: #fff; 
-            padding: 16px 24px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            transform: translateY(100%);
-            animation: slideInUp 0.5s 2s ease-out forwards;
-        }
-        
-        .floating-cta .cta-button {
-            width: 100%; 
-            display: block; 
-            background-color: var(--color-accent);
-            color: #fff; 
-            text-decoration: none; 
-            text-align: center;
-            padding: 18px; 
-            font-size: 1.1rem; 
-            font-weight: 700;
-            border-radius: 8px; 
-            box-sizing: border-box;
-        }
-        
-        .floating-cta .tel-link {
-            text-align: center; 
-            margin-top: 12px; 
-            font-size: 0.9rem;
-        }
-        
-        .floating-cta .tel-link a {
-            color: var(--color-primary); 
-            font-weight: 700; 
-            text-decoration: none;
-        }
-        
-        /* --- 新しいフローティングCTA --- */
-        .floating-cta-enhanced {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            padding: 16px 20px;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            transform: translateY(100%);
-            animation: slideInUp 0.4s 1s ease-out forwards;
-        }
-        
-        .floating-cta-enhanced a {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 16px 20px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            min-height: 56px;
-            max-width: 200px;
-        }
-        
-        .floating-cta-enhanced a i {
-            font-size: 1.3em;
-        }
-        
-        .floating-cta-enhanced a span {
-            white-space: nowrap;
-            letter-spacing: 0.5px;
-        }
-        
-        .floating-cta-enhanced .cta-primary {
-            background: linear-gradient(135deg, var(--color-accent), #D4A574);
-            color: #fff;
-            box-shadow: 0 3px 10px rgba(185, 141, 74, 0.3);
-        }
-        
-        .floating-cta-enhanced .cta-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(185, 141, 74, 0.4);
-        }
-        
-        .floating-cta-enhanced .cta-line {
-            background: #06C755;
-            color: #fff;
-            box-shadow: 0 3px 10px rgba(6, 199, 85, 0.3);
-        }
-        
-        .floating-cta-enhanced .cta-line:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(6, 199, 85, 0.4);
-        }
-        
-        .floating-cta-enhanced .cta-phone {
-            background: #fff;
-            color: var(--color-primary);
-            border: 2px solid var(--color-primary);
-            box-shadow: 0 3px 10px rgba(26, 58, 79, 0.1);
-        }
-        
-        .floating-cta-enhanced .cta-phone:hover {
-            background: var(--color-primary);
-            color: #fff;
-            transform: translateY(-2px);
-        }
+        /* フローティングCTAを外部CSSファイルに移動済み */
 
-        /* --- アニメーション --- */
-        @keyframes fadeIn { 
-            from { opacity: 0; } 
-            to { opacity: 1; } 
-        }
+        /* アニメーションを外部CSSファイルに移動済み */
         
-        @keyframes slideUp { 
-            from { 
-                opacity: 0; 
-                transform: translateY(30px); 
-            } 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
-        }
-        
-        @keyframes slideInUp { 
-            from { transform: translateY(100%); } 
-            to { transform: translateY(0); } 
-        }
-
-        /* --- 文字折り返し制御 --- */
+        /* 文字折り返し制御 */
         .text-balance {
             text-wrap: balance;
         }
@@ -1760,28 +1430,7 @@ get_header();
                 padding: 14px 16px;
             }
             
-            /* モバイルでの新フローティングCTA */
-            .floating-cta-enhanced {
-                padding: 14px 16px;
-                gap: 8px;
-            }
-            
-            .floating-cta-enhanced a {
-                font-size: 1rem;
-                padding: 14px 16px;
-                gap: 6px;
-                min-height: 52px;
-                max-width: 170px;
-                font-weight: 700;
-            }
-            
-            .floating-cta-enhanced a i {
-                font-size: 1.2em;
-            }
-            
-            .floating-cta-enhanced a span {
-                font-size: 0.95rem;
-            }
+            /* フローティングCTAスタイルを外部CSSファイルに移動済み */
             
             /* 顧客価値セクションのレスポンシブ */
             .value-cards {
@@ -1897,33 +1546,7 @@ get_header();
                 padding: 12px 14px;
             }
             
-            /* 小画面での新フローティングCTA */
-            .floating-cta-enhanced {
-                padding: 12px 10px;
-                gap: 6px;
-            }
-            
-            .floating-cta-enhanced a {
-                font-size: 0.95rem;
-                padding: 12px 14px;
-                gap: 4px;
-                min-height: 48px;
-                max-width: 140px;
-                border-radius: 25px;
-                font-weight: 700;
-            }
-            
-            .floating-cta-enhanced a i {
-                font-size: 1.1em;
-            }
-            
-            .floating-cta-enhanced a span {
-                font-size: 0.9rem;
-            }
-            
-            .floating-cta-enhanced .cta-phone {
-                border-width: 2px;
-            }
+            /* フローティングCTAスタイルを外部CSSファイルに移動済み */
             
             /* 小画面での顧客価値セクション */
             .value-cards {
@@ -1994,60 +1617,7 @@ get_header();
         }
 
         /* フッター */
-        .footer {
-            background: var(--color-primary);
-            color: #fff;
-            padding: 60px 0 20px;
-            margin-top: 80px;
-        }
-        
-        .footer-content {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .footer-logo h3 {
-            color: #fff;
-            margin-bottom: 12px;
-            font-size: 1.5rem;
-            font-family: var(--font-heading);
-        }
-        
-        .footer-logo p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 30px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: var(--color-accent);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-        }
-        
-        .footer-bottom p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-        }
+        /* フッタースタイルを外部CSSファイルに移動済み */
         
         @media (max-width: 768px) {
             .footer {
@@ -2215,18 +1785,7 @@ get_header();
             left: 100%;
         }
         
-        /* フローティングCTAに動き */
-        .floating-cta-enhanced {
-            animation: float 4s ease-in-out infinite;
-        }
-        
-        .floating-cta-enhanced a {
-            transition: all 0.3s ease;
-        }
-        
-        .floating-cta-enhanced a:hover {
-            transform: scale(1.1);
-        }
+        /* フローティングCTAアニメーションを外部CSSファイルに移動済み */
         
         /* セクション表示時のアニメーション */
         section {
@@ -2288,7 +1847,7 @@ get_header();
     <!-- ヘッダー -->
     <header class="header">
         <a href="<?php echo home_url(); ?>" class="header-logo">
-            <img src="<?php echo get_template_directory_uri(); ?>/images/logo-sumitsuzuke.png.png" alt="住み続け隊" class="logo-img">
+            <img src="<?php echo get_template_directory_uri(); ?>/images/logo-sumitsuzuke.png" alt="住み続け隊" class="logo-img">
             <span class="logo-text">リースバックの住み続け隊</span>
         </a>
         <div class="header-cta">
@@ -2569,9 +2128,21 @@ get_header();
     <section class="promise-section">
         <div class="container">
             <h2 class="section-title">リースバック住み続け隊 3つのお約束</h2>
-            <div class="promise-item"><img src="<?php echo get_template_directory_uri(); ?>/images/光が差し込むイメージ.avif" alt="光が差し込むイメージ"><h3>1. スピードと確実性を重視</h3><p>最短即日で査定完了、平均7日で資金調達。ビジネスの重要なタイミングを逃さないよう、迅速かつ確実なサポートをお約束します。</p></div>
-            <div class="promise-item"><img src="https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=870" alt="真摯に向き合う手元のイメージ"><h3>2. 事業に最適な条件設計</h3><p>賃料の経費計上、買戻しオプション、資金繰りに合わせた返済計画など、事業の成長ステージに応じた柔軟な条件を設計します。</p></div>
-            <div class="promise-item"><img src="<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif" alt="家の土台のイメージ"><h3>3. 信頼と実績のネットワーク</h3><p>複数の金融機関、不動産会社との提携により、最高の資金調達条件を実現。事業継続率85%の実績が、私たちの信頼性を証明しています。</p></div>
+            <div class="promise-item">
+                <h3>1. スピードと確実性を重視</h3>
+                <p>最短即日で査定完了、平均7日で資金調達。ビジネスの重要なタイミングを逃さないよう、迅速かつ確実なサポートをお約束します。</p>
+                <img src="<?php echo get_template_directory_uri(); ?>/images/光が差し込むイメージ.avif" alt="光が差し込むイメージ">
+            </div>
+            <div class="promise-item">
+                <h3>2. 事業に最適な条件設計</h3>
+                <p>賃料の経費計上、買戻しオプション、資金繰りに合わせた返済計画など、事業の成長ステージに応じた柔軟な条件を設計します。</p>
+                <img src="https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=870" alt="真摯に向き合う手元のイメージ">
+            </div>
+            <div class="promise-item">
+                <h3>3. 信頼と実績のネットワーク</h3>
+                <p>複数の金融機関、不動産会社との提携により、最高の資金調達条件を実現。事業継続率85%の実績が、私たちの信頼性を証明しています。</p>
+                <img src="<?php echo get_template_directory_uri(); ?>/images/家の土台のイメージ.avif" alt="家の土台のイメージ">
+            </div>
         </div>
     </section>
 

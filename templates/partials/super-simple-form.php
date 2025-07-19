@@ -95,9 +95,10 @@
         </div>
         
         <!-- Step 4: 査定結果＋メール入力 -->
-        <div class="form-step" id="step4">
-            <div class="estimate-result">
-                <h4>🎯 AI査定結果</h4>
+        <div class="form-step" id="step4" style="position: relative;">
+            <!-- 統合された査定結果セクション -->
+            <div class="estimate-result blurred" id="estimateResult">
+                <h4>🎯 AI査定が完了しました</h4>
                 <div class="estimate-amount">
                     <div class="price-animation">
                         <span class="currency">¥</span>
@@ -111,39 +112,97 @@
                     <p class="estimate-note">※AI分析による推定価格（誤差±5%）</p>
                 </div>
                 
-                <div class="assessment-confidence">
-                    <div class="confidence-badge">
-                        <i class="fas fa-shield-check"></i>
-                        <span>精度 95%以上</span>
+                <!-- ぼかしオーバーレイ（モーダルが出るので不要） -->
+                <div class="blur-overlay" style="display: none;">
+                    <div class="blur-message">
+                        <h6>🔒 査定結果を確認</h6>
+                        <p>メールアドレスを入力すると<br>詳細な査定結果PDFをお送りします</p>
                     </div>
-                    <p class="confidence-text">AIが市場データを分析して算出した推定価格です</p>
+                </div>
+                
+                <!-- メール入力モーダル -->
+                <div class="email-modal" id="emailModal">
+                <div class="email-modal-content">
+                    <div class="modal-header">
+                        <h5>査定結果を受け取る</h5>
+                        <p>詳細な査定レポートPDFをメールでお送りします</p>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <input type="email" id="modalEmail" placeholder="メールアドレスを入力" required>
+                        <button type="submit" class="modal-submit-btn" onclick="submitEmail()">
+                            <i class="fas fa-envelope"></i>
+                            査定結果を受け取る
+                        </button>
+                    </div>
+                    
+                    <div class="privacy-note">
+                        <i class="fas fa-lock"></i>
+                        <span>営業電話は一切ありません・匿名査定OK</span>
+                    </div>
                 </div>
             </div>
+            </div>
             
-            <div class="premium-offer">
-                <div class="offer-header">
-                    <h5>📊 リースバック活用ガイド（無料）をプレゼント</h5>
-                    <p>査定結果と併せて、リースバック成功のポイントをまとめた特別資料をお送りします</p>
+            <!-- 隠しメール入力（既存の処理用） -->
+            <input type="email" id="email" style="display:none;">
+            
+            <!-- PDF査定書サンプルセクション -->
+            <div class="pdf-sample-section">
+                <h5>📊 プロ仕様の査定結果PDFをお届け</h5>
+                <div class="pdf-sample-image">
+                    <div class="pdf-mockup">
+                        <div class="pdf-header">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>リースバック査定書</span>
+                        </div>
+                        <div class="pdf-content">
+                            <div class="pdf-section">
+                                <h6>📈 査定価格詳細</h6>
+                                <div class="pdf-detail">
+                                    <span class="detail-label">推定売却価格</span>
+                                    <span class="detail-value">¥****万円</span>
+                                </div>
+                                <div class="pdf-detail">
+                                    <span class="detail-label">リースバック賃料</span>
+                                    <span class="detail-value">月額**万円</span>
+                                </div>
+                                <div class="pdf-detail">
+                                    <span class="detail-label">買戻し価格目安</span>
+                                    <span class="detail-value">¥****万円</span>
+                                </div>
+                            </div>
+                            
+                            <div class="pdf-section">
+                                <h6>📊 市場分析レポート</h6>
+                                <ul class="pdf-list">
+                                    <li>周辺相場との比較グラフ</li>
+                                    <li>過去3年間の価格推移</li>
+                                    <li>エリア別ランキング</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="pdf-section">
+                                <h6>📚 20ページの活用ガイド</h6>
+                                <ul class="pdf-list">
+                                    <li>リースバック成功事例15選</li>
+                                    <li>税金対策の具体例</li>
+                                    <li>よくある失敗と回避方法</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="pdf-bonus">
+                                <span class="bonus-badge">特典付き</span>
+                                <p>業者選定チェックリスト・契約書サンプル・無料相談クーポン</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="offer-benefits">
-                    <div class="benefit-item">✅ あなたの査定結果を保存</div>
-                    <div class="benefit-item">✅ リースバック活用の成功事例</div>
-                    <div class="benefit-item">✅ 専門家による無料相談のご案内</div>
-                </div>
-                
-                <div class="email-input-group">
-                    <input type="email" id="email" placeholder="メールアドレス" required>
-                    <button type="submit" class="get-guide-btn">
-                        <i class="fas fa-gift"></i>
-                        無料ガイドを受け取る
-                    </button>
-                </div>
-                
-                <div class="privacy-note">
-                    <i class="fas fa-lock"></i>
-                    <span>営業電話は一切ありません・匿名査定OK</span>
-                </div>
+                <p class="pdf-features">
+                    <span><i class="fas fa-check-circle"></i> 詳細な価格分析</span>
+                    <span><i class="fas fa-check-circle"></i> 市場データ比較</span>
+                    <span><i class="fas fa-check-circle"></i> リースバック活用ガイド付</span>
+                </p>
             </div>
             
             <button class="back-btn" onclick="goToStep('step2')">← 戻る</button>
@@ -153,8 +212,12 @@
         <div class="form-step" id="step5">
             <div class="thank-you-page">
                 <div class="success-icon">✅</div>
-                <h3>査定結果とガイドをメールで送信しました</h3>
-                <p>数分以内にメールが届きます。迷惑メールフォルダもご確認ください。</p>
+                <h3>査定結果PDFをメールで送信しました</h3>
+                <div class="pdf-sample-preview">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>プロ仕様の詳細な査定レポートをお送りしました</p>
+                </div>
+                <p class="email-notice">数分以内に詳細な査定金額が記載されたPDFが届きます。<br>迷惑メールフォルダもご確認ください。</p>
                 
                 <div class="next-steps">
                     <h4>📋 より正確な査定をご希望の場合</h4>
@@ -180,7 +243,7 @@
     max-width: 800px;
     margin: 0 auto;
     padding: clamp(2rem, 5vw, 3rem);
-    background: #fff;
+    background: #f8f9fa;
     border-radius: 20px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.12);
     position: relative;
@@ -290,7 +353,7 @@
 
 .choice-btn {
     padding: clamp(1rem, 2.5vw, 1.25rem);
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-accent);
     border-radius: 12px;
     background: #fff;
     cursor: pointer;
@@ -351,7 +414,62 @@
     text-align: center;
     margin-bottom: 25px;
     border: 2px solid #28a745;
+    position: relative;
+    overflow: visible;
 }
+
+/* ぼかしオーバーレイ */
+.estimate-result.blurred .estimate-amount {
+    filter: blur(5px);
+    user-select: none;
+    pointer-events: none;
+}
+
+.blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(2px);
+    border-radius: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.estimate-result.blurred .blur-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.blur-message {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 300px;
+}
+
+.blur-message h6 {
+    color: var(--color-primary);
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.blur-message p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 15px 0;
+    line-height: 1.4;
+}
+
 
 .estimate-amount {
     margin-top: 10px;
@@ -408,6 +526,25 @@
     font-size: 0.9rem;
     line-height: 1.5;
     margin: 0;
+}
+
+.pdf-features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.pdf-features span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #28a745;
+    font-weight: 500;
+}
+
+.pdf-features i {
+    font-size: 0.9em;
 }
 
 .offer-benefits {
@@ -487,6 +624,290 @@
     color: #666;
     margin-bottom: 30px;
     line-height: 1.6;
+}
+
+.pdf-sample-preview {
+    background: linear-gradient(135deg, #fef3f3, #fce4e4);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px auto;
+    max-width: 400px;
+    border: 2px solid #dc3545;
+}
+
+.pdf-sample-preview i {
+    font-size: 3rem;
+    color: #dc3545;
+    margin-bottom: 10px;
+}
+
+.pdf-sample-preview p {
+    margin: 0;
+    font-weight: 600;
+    color: #dc3545;
+}
+
+.email-notice {
+    color: #666;
+    margin: 20px 0 30px;
+    line-height: 1.6;
+}
+
+/* メール入力モーダル */
+.email-modal {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    width: 85%;
+    max-width: 320px;
+}
+
+/* 背景のブラックアウト削除 */
+
+.email-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.email-modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--color-accent);
+}
+
+.email-modal.show .email-modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.modal-header h5 {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.modal-header p {
+    color: #666;
+    font-size: 1rem;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-body input {
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal-body input:focus {
+    border-color: var(--color-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(185, 141, 74, 0.1);
+}
+
+.modal-submit-btn {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(185, 141, 74, 0.4);
+}
+
+/* PDF査定書サンプルセクション */
+.pdf-sample-section {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-top: 25px;
+    text-align: center;
+    border: 2px solid #e9ecef;
+}
+
+.pdf-sample-section h5 {
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.pdf-sample-image {
+    margin: 20px 0;
+}
+
+.pdf-mockup {
+    max-width: 350px;
+    margin: 0 auto;
+    background: white;
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: perspective(1000px) rotateX(5deg);
+    transition: transform 0.3s ease;
+}
+
+.pdf-mockup:hover {
+    transform: perspective(1000px) rotateX(0deg) scale(1.05);
+}
+
+.pdf-header {
+    background: #dc3545;
+    color: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.pdf-header i {
+    font-size: 1.5rem;
+}
+
+.pdf-content {
+    padding: 20px;
+}
+
+.pdf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px dashed #e9ecef;
+}
+
+.pdf-item:last-child {
+    border-bottom: none;
+}
+
+.pdf-item .label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.pdf-item .value {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+/* PDF詳細コンテンツスタイル */
+.pdf-section {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.pdf-section h6 {
+    color: var(--color-primary);
+    font-size: 1rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.pdf-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: var(--color-accent);
+    font-size: 0.9rem;
+}
+
+.pdf-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pdf-list li {
+    padding: 6px 12px;
+    background: #f8f9fa;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #666;
+    position: relative;
+    padding-left: 28px;
+}
+
+.pdf-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 12px;
+    color: #28a745;
+    font-weight: 600;
+}
+
+.pdf-bonus {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 15px;
+    border: 2px solid #ffc107;
+}
+
+.bonus-badge {
+    background: #ffc107;
+    color: #856404;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.pdf-bonus p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #856404;
+    font-weight: 500;
 }
 
 .next-steps {
@@ -659,7 +1080,7 @@
 
 .quick-btn {
     padding: 0.5rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-accent);
     border-radius: 8px;
     background: #fff;
     cursor: pointer;
@@ -819,6 +1240,26 @@
     }
 }
 
+/* ぼかし状態でもアニメーションが見える */
+.estimate-result.blurred .price-animation {
+    animation: pulseBlurred 2s ease-out;
+}
+
+@keyframes pulseBlurred {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 .back-btn {
     background: transparent;
     border: none;
@@ -866,6 +1307,15 @@
 @media (max-width: 600px) {
     .choice-buttons {
         grid-template-columns: 1fr 1fr;
+    }
+    
+    .email-modal {
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    .email-modal-content {
+        padding: 20px;
     }
 }
 
@@ -1069,7 +1519,13 @@ function calculateAndShowResult() {
     // アニメーション付きで結果を表示
     goToStep('step4');
     
-    // カウントアップアニメーション
+    // 結果をぼかした状態で表示
+    const estimateResult = document.getElementById('estimateResult');
+    if (estimateResult) {
+        estimateResult.classList.add('blurred');
+    }
+    
+    // カウントアップアニメーション（ぼかした状態で実行）
     setTimeout(() => {
         animateNumber('mainAmount', result.main);
         animateNumber('rangeLow', result.low);
@@ -1077,7 +1533,45 @@ function calculateAndShowResult() {
         
         // 査定根拠を表示
         displayFactors(result.factors);
+        
+        // アニメーション完了後にモーダルを表示
+        setTimeout(() => {
+            showEmailModal();
+        }, 2000);
     }, 300);
+}
+
+// メールモーダル表示
+function showEmailModal() {
+    const modal = document.getElementById('emailModal');
+    if (modal) {
+        modal.classList.add('show');
+        document.getElementById('modalEmail').focus();
+    }
+}
+
+// メール送信処理
+function submitEmail() {
+    const email = document.getElementById('modalEmail').value;
+    if (!email || !email.includes('@')) {
+        alert('正しいメールアドレスを入力してください');
+        return;
+    }
+    
+    // 元のメール入力フィールドに値をコピー
+    document.getElementById('email').value = email;
+    
+    // モーダルを閉じる
+    const modal = document.getElementById('emailModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+    
+    // 既存の送信処理を実行
+    const getGuideBtn = document.querySelector('.get-guide-btn');
+    if (getGuideBtn) {
+        getGuideBtn.click();
+    }
 }
 
 // 数値アニメーション
@@ -1182,6 +1676,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             formData.email = email;
+            
+            // ぼかしは解除しない（メールで確認してもらう）
+            // const estimateResult = document.getElementById('estimateResult');
+            // if (estimateResult) {
+            //     estimateResult.classList.remove('blurred');
+            // }
             
             // Google Analytics追跡
             if (typeof gtag !== 'undefined') {

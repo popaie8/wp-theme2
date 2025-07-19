@@ -1,0 +1,95 @@
+/**
+ * メインスタイルシート
+ * 共通のCSS変数とベーススタイルを定義
+ */
+
+/* CSS変数定義 */
+:root {
+    --color-primary: #1A3A4F; /* 深い紺色 */
+    --color-secondary: #333333; /* テキスト */
+    --color-accent: #B98D4A;  /* 上品なゴールド/ブラウン */
+    --color-background: #F4F2EF; /* 柔らかいベージュ */
+    --font-body: 'Noto Sans JP', sans-serif;
+    --font-heading: 'Noto Serif JP', serif;
+    
+    /* スペーシングシステム */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+    
+    /* コンテナ幅 */
+    --container-max: 1200px;
+    --container-padding: 24px;
+}
+
+/* ベーススタイル */
+html { 
+    scroll-behavior: smooth; 
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-secondary);
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 85px; /* フローティングCTA分の余白 */
+    -webkit-text-size-adjust: 100%; /* iOSでのテキストサイズ調整を防ぐ */
+    font-weight: 500; /* 基本の文字を太く */
+}
+
+/* コンテナ基本スタイル */
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ユーティリティクラス */
+.text-center { text-align: center; }
+.mt-1 { margin-top: var(--spacing-sm); }
+.mt-2 { margin-top: var(--spacing-md); }
+.mt-3 { margin-top: var(--spacing-lg); }
+.mb-1 { margin-bottom: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.mb-3 { margin-bottom: var(--spacing-lg); }
+
+/* アニメーションキーフレーム */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes shine {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}

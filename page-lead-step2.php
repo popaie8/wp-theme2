@@ -130,7 +130,7 @@ $labels = [
         }
 
         .form-wrapper {
-            background: #fff;
+            background: #f8f9fa;
             border-radius: 14px;
             padding: clamp(40px, 6vw, 60px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
@@ -360,8 +360,8 @@ $labels = [
 
         .btn-next,
         .btn-submit {
-            background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
-            color: white;
+            background: #fff;
+            color: var(--color-primary);
             border: 2px solid var(--color-accent);
         }
 
@@ -369,7 +369,7 @@ $labels = [
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(185, 141, 74, 0.4);
-            filter: brightness(1.1);
+            background: #f8f9fa;
         }
 
         /* 同意チェックボックス */

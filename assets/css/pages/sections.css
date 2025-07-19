@@ -1,0 +1,81 @@
+/**
+ * セクション共通スタイル
+ * index.phpから分離
+ */
+
+/* セクション基本スタイル */
+section {
+    padding: clamp(2.5rem, 6vw, 4rem) 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    position: relative;
+}
+
+section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* セクション間の視覚的区切り */
+section:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0.3;
+}
+
+/* 見出しスタイル */
+h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    line-height: 1.4;
+    color: var(--color-primary);
+}
+
+h2.section-title {
+    font-size: clamp(1.8rem, 3.5vw + 0.5rem, 3rem);
+    text-align: center !important;
+    margin: 0 auto var(--spacing-xl) auto;
+    font-weight: 800;
+    line-height: 1.2;
+    width: 100%;
+    position: relative;
+    padding: 1.5rem 0;
+    color: var(--color-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: block;
+    text-wrap: balance;
+}
+
+h2.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(185, 141, 74, 0.3);
+}
+
+/* 特別なセクションタイトル */
+.special-section-title {
+    font-size: clamp(2rem, 4vw + 0.5rem, 3.5rem);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    margin-bottom: var(--spacing-2xl);
+    text-shadow: none;
+    position: relative;
+    padding: 2rem 0;
+}
